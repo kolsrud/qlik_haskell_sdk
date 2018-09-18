@@ -46,3 +46,20 @@ onGetChildInfosResponse (ResponseMessage _ _ result) = case readJSON result of
     Ok (ValueObject a) -> a ^. asPropValueLens "qInfos"
  where
   method = "GetChildInfos"
+
+getListObjectData :: GenericObject -> String -> [NxPage] -> SDKM [NxDataPage]
+getListObjectData obj path pages = getListObjectDataAsync obj path pages >>= awaitResult
+
+getListObjectDataAsync :: GenericObject -> String -> [NxPage] -> SDKM (Task [NxDataPage])
+getListObjectDataAsync (GenericObject (QixObject h _)) path pages =
+  sendRequestM h "GetListObjectData" [ ("qPath", ValueString path)
+                                     , ("qPages", ValueArray (map (ValueObject . toAs) pages))
+                                     ]
+                                     onGetListObjectDataResponse
+
+onGetListObjectDataResponse :: ResponseProcessor [NxDataPage]
+onGetListObjectDataResponse (ResponseMessage _ _ result) = case readJSON result of
+    Error e -> error $ "Cannot read return value for " ++ method ++ ": " ++ (show result)
+    Ok (ValueObject a) -> a ^. asPropValueLens "qDataPages"
+ where
+  method = "GetListObjectData"
