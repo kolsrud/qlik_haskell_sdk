@@ -28,28 +28,26 @@ initialState conn = SDKState {
   requestMap = Map.empty
 }
 
-getState :: SDKM SDKState
-getState = do
+readState :: (SDKState -> a) -> SDKM a
+readState f = do
   mvar <- get
-  liftIO $ readMVar mvar
-
-putState :: SDKState -> SDKM ()
-putState s = do
+  liftIO $ fmap f (readMVar mvar)
+          
+atomic :: (SDKState -> (a, SDKState)) -> SDKM a
+atomic f = do
   mvar <- get
-  liftIO $ tryTakeMVar mvar
-  liftIO $ putMVar mvar s
-
+  liftIO $ do state <- takeMVar mvar
+              let (x, state') = f state
+              putMVar mvar state'
+              return x
+  
 newRequestIdM :: SDKM RequestId
-newRequestIdM = do
-  s <- getState
-  let id = requestId s
-  putState (s { requestId = id + 1})
-  return id
+newRequestIdM = atomic $ \s -> let id = requestId s
+                                in (id, s {requestId = id +1})
 
 addRequestListner :: RequestId -> ResponseCallback -> SDKM ()
-addRequestListner id callback = do
-  s <- getState
-  putState (s { requestMap = Map.insert id callback (requestMap s)})
+addRequestListner id callback = atomic $ \s ->
+  ((), s { requestMap = Map.insert id callback (requestMap s) })
 
 setResult :: MVar SDKState -> ResponseMessage -> IO ()
 setResult mvar r@(PushMessage _) = return ()
@@ -59,5 +57,5 @@ setResult mvar r@(ResponseMessage id _ _) = do
   case Map.lookup id requests of
     Nothing -> error $ "No request with id " ++ show id ++ " found in map."
     Just callback -> do
-      callback r
       putMVar mvar (s { requestMap = Map.delete id requests })
+      callback r

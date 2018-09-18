@@ -26,6 +26,9 @@ import SDKMonad
 import AbstractStructure
 import Debug.Trace
 
+debugConsole = False
+-- debugConsole = True
+
 rpcRequest :: Handle -> RequestId -> String -> ParameterList -> String
 rpcRequest handle requestId method params =
   "{\"jsonrpc\":\"2.0\",\"id\":" ++ show requestId ++
@@ -71,11 +74,13 @@ parseResponseMessage msg =
        in case m_id of
             Nothing ->
               let method = getProp obj "method"
-               in trace (show (AbstractStructure obj)) $ PushMessage method
+               in --trace (show (AbstractStructure obj)) $
+                  PushMessage method
             Just id ->
               let result = getProp obj "result"
                   ret    = getPropMaybe result "qReturn"
-               in trace (show (AbstractStructure obj)) $ ResponseMessage id ret (JSObject result)
+               in --trace (show (AbstractStructure obj)) $
+                  ResponseMessage id ret (JSObject result)
     Ok x -> error $ "parseResponseMessage: " ++ (show x)
 
 getProp :: JSON a => JSObject JSValue -> String -> a
@@ -104,16 +109,14 @@ sendRequestM handle method params onResponse = do
 
 sendMessage :: String -> SDKM ()
 sendMessage msg = do
-  s <- getState
-  let conn = connection s
-  putState s
-  -- liftIO $ putStrLn ("Sending message:   " ++ msg)
+  conn <- readState connection
+  when (debugConsole) (liftIO $ putStrLn ("Sending message:   " ++ msg))
   liftIO $ WS.sendTextData conn (T.pack msg)
 
 responseListner :: WS.Connection -> MVar SDKState -> IO ()
 responseListner conn mvar = forever $ do
   txt <- WS.receiveData conn
-  -- putStrLn ("Receiving message: " ++ T.unpack txt)
+  when (debugConsole) (putStrLn ("Receiving message: " ++ T.unpack txt))
   setResult mvar (parseResponseMessage txt)
 
 makeResponseTask :: RequestId -> ResponseProcessor a -> SDKM (Task a)
