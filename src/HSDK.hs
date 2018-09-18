@@ -6,6 +6,7 @@ import Text.JSON
 import AbstractStructure
 import GenericObject
 import Debug.Trace
+import ModelEngine (GenericObjectProperties)
 
 productVersion :: SDKM String
 productVersion = productVersionAsync >>= awaitResult
@@ -39,12 +40,12 @@ onReturnResponse method (ResponseMessage _ mret _) = case mret of
     Error e -> error $ "Cannot read return value for " ++ method ++ ": " ++ (show v)
     Ok a -> a
 
-createSessionObject :: App -> AbstractStructure -> SDKM GenericObject
+createSessionObject :: App -> GenericObjectProperties -> SDKM GenericObject
 createSessionObject app props = createSessionObjectAsync app props >>= awaitResult
 
-createSessionObjectAsync :: App -> AbstractStructure -> SDKM (Task GenericObject)
+createSessionObjectAsync :: App -> GenericObjectProperties -> SDKM (Task GenericObject)
 createSessionObjectAsync app props =
-  sendRequestM (getHandle app) "CreateSessionObject" [("qProp", ValueObject props)] (onReturnResponse "CreateSessionObject")
+  sendRequestM (getHandle app) "CreateSessionObject" [("qProp", ValueObject (toAs props))] (onReturnResponse "CreateSessionObject")
 
 getObject :: App -> String -> SDKM GenericObject
 getObject app objectId = getObjectAsync app objectId >>= awaitResult

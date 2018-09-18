@@ -13,24 +13,22 @@ import ModelEngine
 import Control.Lens
 import Control.Concurrent
 import System.IO
-
+       
 main :: IO ()
 main = do 
   putStrLn "Start"
   withConnection "127.0.0.1" 4848 myProg
-
-  
   
 myProg :: SDKM ()
 myProg = do
-  app        <- openApp "Sales Discovery"
-  v <- evaluate app "Sum([Sales Amount])"
+  app <- openApp "Sales Discovery"
+  v   <- evaluate app "Sum([Sales Amount])"
   liftIO $ putStrLn v
-  
+
 myProg2 = do
   app        <- openApp "Sales Discovery"
-  list       <- createSessionObject app sheetListProps
-  listLayout <- getLayout list
+  sheetList  <- createSessionObject app sheetListProps
+  listLayout <- getLayout sheetList
   if (null (listLayout ^. qExtendsId))
    then
     liftIO $ putStrLn "No master object"
@@ -53,6 +51,7 @@ myProg2 = do
 --  liftIO $ getLine
   return ()
 
+
 getAllChildren :: App -> GenericObject -> SDKM [GenericObject]
 getAllChildren app objs = do
   allInfos <- getChildInfos objs
@@ -61,8 +60,8 @@ getAllChildren app objs = do
   grandChildren <- mapM (getAllChildren app) children
   return (children ++ (concat grandChildren))
 
-sheetListProps :: AbstractStructure
-sheetListProps =
+sheetListProps :: GenericObjectProperties
+sheetListProps = fromAs $
   emptyAs & p_ "qInfo" .~ infoDef
           & p_ "qAppObjectListDef" .~ listDef
  where
