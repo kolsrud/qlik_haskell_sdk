@@ -6,6 +6,8 @@ module ModelEngine where
 import Control.Lens
 import AbstractStructure
 import HardCoded
+import SDKMonad
+import SDKBase
 newtype SelectInfo = SelectInfo AbstractStructure
 newtype FieldDefEx = FieldDefEx AbstractStructure
 newtype CalendarStrings = CalendarStrings AbstractStructure
@@ -17,6 +19,7 @@ newtype RangeSelectInfo = RangeSelectInfo AbstractStructure
 newtype Range = Range AbstractStructure
 newtype OtherTotalSpecProp = OtherTotalSpecProp AbstractStructure
 newtype LocaleInfo = LocaleInfo AbstractStructure
+newtype LineageInfo = LineageInfo AbstractStructure
 newtype FieldValue = FieldValue AbstractStructure
 newtype FieldAttributes = FieldAttributes AbstractStructure
 newtype EditorBreakpoint = EditorBreakpoint AbstractStructure
@@ -39,9 +42,13 @@ newtype StaticContentUrl = StaticContentUrl AbstractStructure
 newtype NxAppProperties = NxAppProperties AbstractStructure
 newtype NxAppLayout = NxAppLayout AbstractStructure
 newtype NxLibraryDimensionDef = NxLibraryDimensionDef AbstractStructure
+newtype NxLibraryDimension = NxLibraryDimension AbstractStructure
 newtype NxInlineDimensionDef = NxInlineDimensionDef AbstractStructure
+newtype NxCalcCond = NxCalcCond AbstractStructure
 newtype NxDimension = NxDimension AbstractStructure
+newtype NxTreeDimensionDef = NxTreeDimensionDef AbstractStructure
 newtype NxLibraryMeasureDef = NxLibraryMeasureDef AbstractStructure
+newtype NxLibraryMeasure = NxLibraryMeasure AbstractStructure
 newtype NxInlineMeasureDef = NxInlineMeasureDef AbstractStructure
 newtype NxAttrExprDef = NxAttrExprDef AbstractStructure
 newtype NxAttrExprInfo = NxAttrExprInfo AbstractStructure
@@ -65,13 +72,18 @@ newtype JsonObject = JsonObject AbstractStructure
 newtype JsonArray = JsonArray AbstractStructure
 newtype JsonProperty = JsonProperty AbstractStructure
 newtype NxContainerEntry = NxContainerEntry AbstractStructure
+newtype NxCardinalities = NxCardinalities AbstractStructure
 newtype NxDimensionInfo = NxDimensionInfo AbstractStructure
+newtype NxTreeDimensionInfo = NxTreeDimensionInfo AbstractStructure
 newtype NxMeasureInfo = NxMeasureInfo AbstractStructure
 newtype AppScriptObject = AppScriptObject AbstractStructure
+newtype AppScript = AppScript AbstractStructure
 newtype NxFieldSelectionInfo = NxFieldSelectionInfo AbstractStructure
 newtype NxCurrentSelectionItem = NxCurrentSelectionItem AbstractStructure
 newtype NxRangeSelectInfo = NxRangeSelectInfo AbstractStructure
 newtype NxMultiRangeSelectInfo = NxMultiRangeSelectInfo AbstractStructure
+newtype NxTreeRangeSelectInfo = NxTreeRangeSelectInfo AbstractStructure
+newtype NxTreeMultiRangeSelectInfo = NxTreeMultiRangeSelectInfo AbstractStructure
 newtype NxContinuousRangeSelectInfo = NxContinuousRangeSelectInfo AbstractStructure
 newtype NxAutoSortByStateDef = NxAutoSortByStateDef AbstractStructure
 newtype NxLocatedExpression = NxLocatedExpression AbstractStructure
@@ -90,6 +102,8 @@ newtype NxExpressionCubeExpr = NxExpressionCubeExpr AbstractStructure
 newtype NxExpressionCubeDef = NxExpressionCubeDef AbstractStructure
 newtype HyperCubeDef = HyperCubeDef AbstractStructure
 newtype HyperCube = HyperCube AbstractStructure
+newtype TreeDataDef = TreeDataDef AbstractStructure
+newtype TreeData = TreeData AbstractStructure
 newtype ChildListDef = ChildListDef AbstractStructure
 newtype ChildList = ChildList AbstractStructure
 newtype AppObjectListDef = AppObjectListDef AbstractStructure
@@ -131,10 +145,10 @@ newtype GenericObjectEntry = GenericObjectEntry AbstractStructure
 newtype GenericAppObjectEntry = GenericAppObjectEntry AbstractStructure
 newtype NxQvfBundledItem = NxQvfBundledItem AbstractStructure
 newtype NxPatch = NxPatch AbstractStructure
-newtype NxListObjectSelect = NxListObjectSelect AbstractStructure
 newtype NxSelectionCell = NxSelectionCell AbstractStructure
 newtype NxLinkedObjectInfo = NxLinkedObjectInfo AbstractStructure
 newtype LayoutExclude = LayoutExclude AbstractStructure
+newtype UndoExclude = UndoExclude AbstractStructure
 newtype NxDataAreaPage = NxDataAreaPage AbstractStructure
 newtype NxViewPort = NxViewPort AbstractStructure
 newtype SearchAttribute = SearchAttribute AbstractStructure
@@ -144,6 +158,12 @@ newtype NxContinuousDataOptions = NxContinuousDataOptions AbstractStructure
 newtype NxTickCell = NxTickCell AbstractStructure
 newtype NxAxisTicks = NxAxisTicks AbstractStructure
 newtype NxAxisData = NxAxisData AbstractStructure
+newtype NxGetBookmarkOptions = NxGetBookmarkOptions AbstractStructure
+newtype NxTreeValue = NxTreeValue AbstractStructure
+newtype NxTreeNode = NxTreeNode AbstractStructure
+newtype NxPageTreeLevel = NxPageTreeLevel AbstractStructure
+newtype NxPageTreeNode = NxPageTreeNode AbstractStructure
+newtype NxTreeDataOption = NxTreeDataOption AbstractStructure
 newtype GenericDimensionProperties = GenericDimensionProperties AbstractStructure
 newtype GenericDimensionInfo = GenericDimensionInfo AbstractStructure
 newtype GenericDimensionLayout = GenericDimensionLayout AbstractStructure
@@ -182,22 +202,20 @@ newtype AssociationScore = AssociationScore AbstractStructure
 newtype DoReloadExParams = DoReloadExParams AbstractStructure
 newtype DoReloadExResult = DoReloadExResult AbstractStructure
 newtype NxNotification = NxNotification AbstractStructure
+newtype NxGetObjectOptions = NxGetObjectOptions AbstractStructure
+newtype NxDownloadInfo = NxDownloadInfo AbstractStructure
+newtype NxDownloadOptions = NxDownloadOptions AbstractStructure
 newtype NxFieldProperties = NxFieldProperties AbstractStructure
 newtype NxVariableProperties = NxVariableProperties AbstractStructure
-newtype NxGetQixCounterResult = NxGetQixCounterResult AbstractStructure
 newtype AppEntry = AppEntry AbstractStructure
 newtype NxFeatureConfiguration = NxFeatureConfiguration AbstractStructure
 newtype NxServiceConfiguration = NxServiceConfiguration AbstractStructure
 newtype NxSystemProperties = NxSystemProperties AbstractStructure
 newtype NxConfigurationInfo = NxConfigurationInfo AbstractStructure
 newtype NxEngineVersion = NxEngineVersion AbstractStructure
-newtype MemoryUsage = MemoryUsage AbstractStructure
-newtype CPUUsage = CPUUsage AbstractStructure
-newtype SessionUsage = SessionUsage AbstractStructure
-newtype AppUsage = AppUsage AbstractStructure
-newtype UserUsage = UserUsage AbstractStructure
-newtype CacheUsage = CacheUsage AbstractStructure
-newtype HealthcheckStatus = HealthcheckStatus AbstractStructure
+newtype JSONWebTokenHeader = JSONWebTokenHeader AbstractStructure
+newtype PersistedObjectMeta = PersistedObjectMeta AbstractStructure
+newtype ObjectInterface = ObjectInterface AbstractStructure
 instance Show SelectInfo where show = show.toAs
 instance Show FieldDefEx where show = show.toAs
 instance Show CalendarStrings where show = show.toAs
@@ -209,6 +227,7 @@ instance Show RangeSelectInfo where show = show.toAs
 instance Show Range where show = show.toAs
 instance Show OtherTotalSpecProp where show = show.toAs
 instance Show LocaleInfo where show = show.toAs
+instance Show LineageInfo where show = show.toAs
 instance Show FieldValue where show = show.toAs
 instance Show FieldAttributes where show = show.toAs
 instance Show EditorBreakpoint where show = show.toAs
@@ -231,9 +250,13 @@ instance Show StaticContentUrl where show = show.toAs
 instance Show NxAppProperties where show = show.toAs
 instance Show NxAppLayout where show = show.toAs
 instance Show NxLibraryDimensionDef where show = show.toAs
+instance Show NxLibraryDimension where show = show.toAs
 instance Show NxInlineDimensionDef where show = show.toAs
+instance Show NxCalcCond where show = show.toAs
 instance Show NxDimension where show = show.toAs
+instance Show NxTreeDimensionDef where show = show.toAs
 instance Show NxLibraryMeasureDef where show = show.toAs
+instance Show NxLibraryMeasure where show = show.toAs
 instance Show NxInlineMeasureDef where show = show.toAs
 instance Show NxAttrExprDef where show = show.toAs
 instance Show NxAttrExprInfo where show = show.toAs
@@ -257,13 +280,18 @@ instance Show JsonObject where show = show.toAs
 instance Show JsonArray where show = show.toAs
 instance Show JsonProperty where show = show.toAs
 instance Show NxContainerEntry where show = show.toAs
+instance Show NxCardinalities where show = show.toAs
 instance Show NxDimensionInfo where show = show.toAs
+instance Show NxTreeDimensionInfo where show = show.toAs
 instance Show NxMeasureInfo where show = show.toAs
 instance Show AppScriptObject where show = show.toAs
+instance Show AppScript where show = show.toAs
 instance Show NxFieldSelectionInfo where show = show.toAs
 instance Show NxCurrentSelectionItem where show = show.toAs
 instance Show NxRangeSelectInfo where show = show.toAs
 instance Show NxMultiRangeSelectInfo where show = show.toAs
+instance Show NxTreeRangeSelectInfo where show = show.toAs
+instance Show NxTreeMultiRangeSelectInfo where show = show.toAs
 instance Show NxContinuousRangeSelectInfo where show = show.toAs
 instance Show NxAutoSortByStateDef where show = show.toAs
 instance Show NxLocatedExpression where show = show.toAs
@@ -282,6 +310,8 @@ instance Show NxExpressionCubeExpr where show = show.toAs
 instance Show NxExpressionCubeDef where show = show.toAs
 instance Show HyperCubeDef where show = show.toAs
 instance Show HyperCube where show = show.toAs
+instance Show TreeDataDef where show = show.toAs
+instance Show TreeData where show = show.toAs
 instance Show ChildListDef where show = show.toAs
 instance Show ChildList where show = show.toAs
 instance Show AppObjectListDef where show = show.toAs
@@ -323,10 +353,10 @@ instance Show GenericObjectEntry where show = show.toAs
 instance Show GenericAppObjectEntry where show = show.toAs
 instance Show NxQvfBundledItem where show = show.toAs
 instance Show NxPatch where show = show.toAs
-instance Show NxListObjectSelect where show = show.toAs
 instance Show NxSelectionCell where show = show.toAs
 instance Show NxLinkedObjectInfo where show = show.toAs
 instance Show LayoutExclude where show = show.toAs
+instance Show UndoExclude where show = show.toAs
 instance Show NxDataAreaPage where show = show.toAs
 instance Show NxViewPort where show = show.toAs
 instance Show SearchAttribute where show = show.toAs
@@ -336,6 +366,12 @@ instance Show NxContinuousDataOptions where show = show.toAs
 instance Show NxTickCell where show = show.toAs
 instance Show NxAxisTicks where show = show.toAs
 instance Show NxAxisData where show = show.toAs
+instance Show NxGetBookmarkOptions where show = show.toAs
+instance Show NxTreeValue where show = show.toAs
+instance Show NxTreeNode where show = show.toAs
+instance Show NxPageTreeLevel where show = show.toAs
+instance Show NxPageTreeNode where show = show.toAs
+instance Show NxTreeDataOption where show = show.toAs
 instance Show GenericDimensionProperties where show = show.toAs
 instance Show GenericDimensionInfo where show = show.toAs
 instance Show GenericDimensionLayout where show = show.toAs
@@ -374,22 +410,20 @@ instance Show AssociationScore where show = show.toAs
 instance Show DoReloadExParams where show = show.toAs
 instance Show DoReloadExResult where show = show.toAs
 instance Show NxNotification where show = show.toAs
+instance Show NxGetObjectOptions where show = show.toAs
+instance Show NxDownloadInfo where show = show.toAs
+instance Show NxDownloadOptions where show = show.toAs
 instance Show NxFieldProperties where show = show.toAs
 instance Show NxVariableProperties where show = show.toAs
-instance Show NxGetQixCounterResult where show = show.toAs
 instance Show AppEntry where show = show.toAs
 instance Show NxFeatureConfiguration where show = show.toAs
 instance Show NxServiceConfiguration where show = show.toAs
 instance Show NxSystemProperties where show = show.toAs
 instance Show NxConfigurationInfo where show = show.toAs
 instance Show NxEngineVersion where show = show.toAs
-instance Show MemoryUsage where show = show.toAs
-instance Show CPUUsage where show = show.toAs
-instance Show SessionUsage where show = show.toAs
-instance Show AppUsage where show = show.toAs
-instance Show UserUsage where show = show.toAs
-instance Show CacheUsage where show = show.toAs
-instance Show HealthcheckStatus where show = show.toAs
+instance Show JSONWebTokenHeader where show = show.toAs
+instance Show PersistedObjectMeta where show = show.toAs
+instance Show ObjectInterface where show = show.toAs
 instance AbstractStructureContainer SelectInfo where
   toAs (SelectInfo as) = as
   fromAs as = SelectInfo as
@@ -433,6 +467,10 @@ instance AbstractStructureContainer OtherTotalSpecProp where
 instance AbstractStructureContainer LocaleInfo where
   toAs (LocaleInfo as) = as
   fromAs as = LocaleInfo as
+
+instance AbstractStructureContainer LineageInfo where
+  toAs (LineageInfo as) = as
+  fromAs as = LineageInfo as
 
 instance AbstractStructureContainer FieldValue where
   toAs (FieldValue as) = as
@@ -522,17 +560,33 @@ instance AbstractStructureContainer NxLibraryDimensionDef where
   toAs (NxLibraryDimensionDef as) = as
   fromAs as = NxLibraryDimensionDef as
 
+instance AbstractStructureContainer NxLibraryDimension where
+  toAs (NxLibraryDimension as) = as
+  fromAs as = NxLibraryDimension as
+
 instance AbstractStructureContainer NxInlineDimensionDef where
   toAs (NxInlineDimensionDef as) = as
   fromAs as = NxInlineDimensionDef as
+
+instance AbstractStructureContainer NxCalcCond where
+  toAs (NxCalcCond as) = as
+  fromAs as = NxCalcCond as
 
 instance AbstractStructureContainer NxDimension where
   toAs (NxDimension as) = as
   fromAs as = NxDimension as
 
+instance AbstractStructureContainer NxTreeDimensionDef where
+  toAs (NxTreeDimensionDef as) = as
+  fromAs as = NxTreeDimensionDef as
+
 instance AbstractStructureContainer NxLibraryMeasureDef where
   toAs (NxLibraryMeasureDef as) = as
   fromAs as = NxLibraryMeasureDef as
+
+instance AbstractStructureContainer NxLibraryMeasure where
+  toAs (NxLibraryMeasure as) = as
+  fromAs as = NxLibraryMeasure as
 
 instance AbstractStructureContainer NxInlineMeasureDef where
   toAs (NxInlineMeasureDef as) = as
@@ -626,9 +680,17 @@ instance AbstractStructureContainer NxContainerEntry where
   toAs (NxContainerEntry as) = as
   fromAs as = NxContainerEntry as
 
+instance AbstractStructureContainer NxCardinalities where
+  toAs (NxCardinalities as) = as
+  fromAs as = NxCardinalities as
+
 instance AbstractStructureContainer NxDimensionInfo where
   toAs (NxDimensionInfo as) = as
   fromAs as = NxDimensionInfo as
+
+instance AbstractStructureContainer NxTreeDimensionInfo where
+  toAs (NxTreeDimensionInfo as) = as
+  fromAs as = NxTreeDimensionInfo as
 
 instance AbstractStructureContainer NxMeasureInfo where
   toAs (NxMeasureInfo as) = as
@@ -637,6 +699,10 @@ instance AbstractStructureContainer NxMeasureInfo where
 instance AbstractStructureContainer AppScriptObject where
   toAs (AppScriptObject as) = as
   fromAs as = AppScriptObject as
+
+instance AbstractStructureContainer AppScript where
+  toAs (AppScript as) = as
+  fromAs as = AppScript as
 
 instance AbstractStructureContainer NxFieldSelectionInfo where
   toAs (NxFieldSelectionInfo as) = as
@@ -653,6 +719,14 @@ instance AbstractStructureContainer NxRangeSelectInfo where
 instance AbstractStructureContainer NxMultiRangeSelectInfo where
   toAs (NxMultiRangeSelectInfo as) = as
   fromAs as = NxMultiRangeSelectInfo as
+
+instance AbstractStructureContainer NxTreeRangeSelectInfo where
+  toAs (NxTreeRangeSelectInfo as) = as
+  fromAs as = NxTreeRangeSelectInfo as
+
+instance AbstractStructureContainer NxTreeMultiRangeSelectInfo where
+  toAs (NxTreeMultiRangeSelectInfo as) = as
+  fromAs as = NxTreeMultiRangeSelectInfo as
 
 instance AbstractStructureContainer NxContinuousRangeSelectInfo where
   toAs (NxContinuousRangeSelectInfo as) = as
@@ -725,6 +799,14 @@ instance AbstractStructureContainer HyperCubeDef where
 instance AbstractStructureContainer HyperCube where
   toAs (HyperCube as) = as
   fromAs as = HyperCube as
+
+instance AbstractStructureContainer TreeDataDef where
+  toAs (TreeDataDef as) = as
+  fromAs as = TreeDataDef as
+
+instance AbstractStructureContainer TreeData where
+  toAs (TreeData as) = as
+  fromAs as = TreeData as
 
 instance AbstractStructureContainer ChildListDef where
   toAs (ChildListDef as) = as
@@ -890,10 +972,6 @@ instance AbstractStructureContainer NxPatch where
   toAs (NxPatch as) = as
   fromAs as = NxPatch as
 
-instance AbstractStructureContainer NxListObjectSelect where
-  toAs (NxListObjectSelect as) = as
-  fromAs as = NxListObjectSelect as
-
 instance AbstractStructureContainer NxSelectionCell where
   toAs (NxSelectionCell as) = as
   fromAs as = NxSelectionCell as
@@ -905,6 +983,10 @@ instance AbstractStructureContainer NxLinkedObjectInfo where
 instance AbstractStructureContainer LayoutExclude where
   toAs (LayoutExclude as) = as
   fromAs as = LayoutExclude as
+
+instance AbstractStructureContainer UndoExclude where
+  toAs (UndoExclude as) = as
+  fromAs as = UndoExclude as
 
 instance AbstractStructureContainer NxDataAreaPage where
   toAs (NxDataAreaPage as) = as
@@ -941,6 +1023,30 @@ instance AbstractStructureContainer NxAxisTicks where
 instance AbstractStructureContainer NxAxisData where
   toAs (NxAxisData as) = as
   fromAs as = NxAxisData as
+
+instance AbstractStructureContainer NxGetBookmarkOptions where
+  toAs (NxGetBookmarkOptions as) = as
+  fromAs as = NxGetBookmarkOptions as
+
+instance AbstractStructureContainer NxTreeValue where
+  toAs (NxTreeValue as) = as
+  fromAs as = NxTreeValue as
+
+instance AbstractStructureContainer NxTreeNode where
+  toAs (NxTreeNode as) = as
+  fromAs as = NxTreeNode as
+
+instance AbstractStructureContainer NxPageTreeLevel where
+  toAs (NxPageTreeLevel as) = as
+  fromAs as = NxPageTreeLevel as
+
+instance AbstractStructureContainer NxPageTreeNode where
+  toAs (NxPageTreeNode as) = as
+  fromAs as = NxPageTreeNode as
+
+instance AbstractStructureContainer NxTreeDataOption where
+  toAs (NxTreeDataOption as) = as
+  fromAs as = NxTreeDataOption as
 
 instance AbstractStructureContainer GenericDimensionProperties where
   toAs (GenericDimensionProperties as) = as
@@ -1094,6 +1200,18 @@ instance AbstractStructureContainer NxNotification where
   toAs (NxNotification as) = as
   fromAs as = NxNotification as
 
+instance AbstractStructureContainer NxGetObjectOptions where
+  toAs (NxGetObjectOptions as) = as
+  fromAs as = NxGetObjectOptions as
+
+instance AbstractStructureContainer NxDownloadInfo where
+  toAs (NxDownloadInfo as) = as
+  fromAs as = NxDownloadInfo as
+
+instance AbstractStructureContainer NxDownloadOptions where
+  toAs (NxDownloadOptions as) = as
+  fromAs as = NxDownloadOptions as
+
 instance AbstractStructureContainer NxFieldProperties where
   toAs (NxFieldProperties as) = as
   fromAs as = NxFieldProperties as
@@ -1101,10 +1219,6 @@ instance AbstractStructureContainer NxFieldProperties where
 instance AbstractStructureContainer NxVariableProperties where
   toAs (NxVariableProperties as) = as
   fromAs as = NxVariableProperties as
-
-instance AbstractStructureContainer NxGetQixCounterResult where
-  toAs (NxGetQixCounterResult as) = as
-  fromAs as = NxGetQixCounterResult as
 
 instance AbstractStructureContainer AppEntry where
   toAs (AppEntry as) = as
@@ -1130,33 +1244,17 @@ instance AbstractStructureContainer NxEngineVersion where
   toAs (NxEngineVersion as) = as
   fromAs as = NxEngineVersion as
 
-instance AbstractStructureContainer MemoryUsage where
-  toAs (MemoryUsage as) = as
-  fromAs as = MemoryUsage as
+instance AbstractStructureContainer JSONWebTokenHeader where
+  toAs (JSONWebTokenHeader as) = as
+  fromAs as = JSONWebTokenHeader as
 
-instance AbstractStructureContainer CPUUsage where
-  toAs (CPUUsage as) = as
-  fromAs as = CPUUsage as
+instance AbstractStructureContainer PersistedObjectMeta where
+  toAs (PersistedObjectMeta as) = as
+  fromAs as = PersistedObjectMeta as
 
-instance AbstractStructureContainer SessionUsage where
-  toAs (SessionUsage as) = as
-  fromAs as = SessionUsage as
-
-instance AbstractStructureContainer AppUsage where
-  toAs (AppUsage as) = as
-  fromAs as = AppUsage as
-
-instance AbstractStructureContainer UserUsage where
-  toAs (UserUsage as) = as
-  fromAs as = UserUsage as
-
-instance AbstractStructureContainer CacheUsage where
-  toAs (CacheUsage as) = as
-  fromAs as = CacheUsage as
-
-instance AbstractStructureContainer HealthcheckStatus where
-  toAs (HealthcheckStatus as) = as
-  fromAs as = HealthcheckStatus as
+instance AbstractStructureContainer ObjectInterface where
+  toAs (ObjectInterface as) = as
+  fromAs as = ObjectInterface as
 
 instance ValueType SelectInfo where
   toValue (SelectInfo as) = toValue as
@@ -1201,6 +1299,10 @@ instance ValueType OtherTotalSpecProp where
 instance ValueType LocaleInfo where
   toValue (LocaleInfo as) = toValue as
   fromValue as = LocaleInfo (fromValue as)
+
+instance ValueType LineageInfo where
+  toValue (LineageInfo as) = toValue as
+  fromValue as = LineageInfo (fromValue as)
 
 instance ValueType FieldValue where
   toValue (FieldValue as) = toValue as
@@ -1290,17 +1392,33 @@ instance ValueType NxLibraryDimensionDef where
   toValue (NxLibraryDimensionDef as) = toValue as
   fromValue as = NxLibraryDimensionDef (fromValue as)
 
+instance ValueType NxLibraryDimension where
+  toValue (NxLibraryDimension as) = toValue as
+  fromValue as = NxLibraryDimension (fromValue as)
+
 instance ValueType NxInlineDimensionDef where
   toValue (NxInlineDimensionDef as) = toValue as
   fromValue as = NxInlineDimensionDef (fromValue as)
+
+instance ValueType NxCalcCond where
+  toValue (NxCalcCond as) = toValue as
+  fromValue as = NxCalcCond (fromValue as)
 
 instance ValueType NxDimension where
   toValue (NxDimension as) = toValue as
   fromValue as = NxDimension (fromValue as)
 
+instance ValueType NxTreeDimensionDef where
+  toValue (NxTreeDimensionDef as) = toValue as
+  fromValue as = NxTreeDimensionDef (fromValue as)
+
 instance ValueType NxLibraryMeasureDef where
   toValue (NxLibraryMeasureDef as) = toValue as
   fromValue as = NxLibraryMeasureDef (fromValue as)
+
+instance ValueType NxLibraryMeasure where
+  toValue (NxLibraryMeasure as) = toValue as
+  fromValue as = NxLibraryMeasure (fromValue as)
 
 instance ValueType NxInlineMeasureDef where
   toValue (NxInlineMeasureDef as) = toValue as
@@ -1394,9 +1512,17 @@ instance ValueType NxContainerEntry where
   toValue (NxContainerEntry as) = toValue as
   fromValue as = NxContainerEntry (fromValue as)
 
+instance ValueType NxCardinalities where
+  toValue (NxCardinalities as) = toValue as
+  fromValue as = NxCardinalities (fromValue as)
+
 instance ValueType NxDimensionInfo where
   toValue (NxDimensionInfo as) = toValue as
   fromValue as = NxDimensionInfo (fromValue as)
+
+instance ValueType NxTreeDimensionInfo where
+  toValue (NxTreeDimensionInfo as) = toValue as
+  fromValue as = NxTreeDimensionInfo (fromValue as)
 
 instance ValueType NxMeasureInfo where
   toValue (NxMeasureInfo as) = toValue as
@@ -1405,6 +1531,10 @@ instance ValueType NxMeasureInfo where
 instance ValueType AppScriptObject where
   toValue (AppScriptObject as) = toValue as
   fromValue as = AppScriptObject (fromValue as)
+
+instance ValueType AppScript where
+  toValue (AppScript as) = toValue as
+  fromValue as = AppScript (fromValue as)
 
 instance ValueType NxFieldSelectionInfo where
   toValue (NxFieldSelectionInfo as) = toValue as
@@ -1421,6 +1551,14 @@ instance ValueType NxRangeSelectInfo where
 instance ValueType NxMultiRangeSelectInfo where
   toValue (NxMultiRangeSelectInfo as) = toValue as
   fromValue as = NxMultiRangeSelectInfo (fromValue as)
+
+instance ValueType NxTreeRangeSelectInfo where
+  toValue (NxTreeRangeSelectInfo as) = toValue as
+  fromValue as = NxTreeRangeSelectInfo (fromValue as)
+
+instance ValueType NxTreeMultiRangeSelectInfo where
+  toValue (NxTreeMultiRangeSelectInfo as) = toValue as
+  fromValue as = NxTreeMultiRangeSelectInfo (fromValue as)
 
 instance ValueType NxContinuousRangeSelectInfo where
   toValue (NxContinuousRangeSelectInfo as) = toValue as
@@ -1493,6 +1631,14 @@ instance ValueType HyperCubeDef where
 instance ValueType HyperCube where
   toValue (HyperCube as) = toValue as
   fromValue as = HyperCube (fromValue as)
+
+instance ValueType TreeDataDef where
+  toValue (TreeDataDef as) = toValue as
+  fromValue as = TreeDataDef (fromValue as)
+
+instance ValueType TreeData where
+  toValue (TreeData as) = toValue as
+  fromValue as = TreeData (fromValue as)
 
 instance ValueType ChildListDef where
   toValue (ChildListDef as) = toValue as
@@ -1658,10 +1804,6 @@ instance ValueType NxPatch where
   toValue (NxPatch as) = toValue as
   fromValue as = NxPatch (fromValue as)
 
-instance ValueType NxListObjectSelect where
-  toValue (NxListObjectSelect as) = toValue as
-  fromValue as = NxListObjectSelect (fromValue as)
-
 instance ValueType NxSelectionCell where
   toValue (NxSelectionCell as) = toValue as
   fromValue as = NxSelectionCell (fromValue as)
@@ -1673,6 +1815,10 @@ instance ValueType NxLinkedObjectInfo where
 instance ValueType LayoutExclude where
   toValue (LayoutExclude as) = toValue as
   fromValue as = LayoutExclude (fromValue as)
+
+instance ValueType UndoExclude where
+  toValue (UndoExclude as) = toValue as
+  fromValue as = UndoExclude (fromValue as)
 
 instance ValueType NxDataAreaPage where
   toValue (NxDataAreaPage as) = toValue as
@@ -1709,6 +1855,30 @@ instance ValueType NxAxisTicks where
 instance ValueType NxAxisData where
   toValue (NxAxisData as) = toValue as
   fromValue as = NxAxisData (fromValue as)
+
+instance ValueType NxGetBookmarkOptions where
+  toValue (NxGetBookmarkOptions as) = toValue as
+  fromValue as = NxGetBookmarkOptions (fromValue as)
+
+instance ValueType NxTreeValue where
+  toValue (NxTreeValue as) = toValue as
+  fromValue as = NxTreeValue (fromValue as)
+
+instance ValueType NxTreeNode where
+  toValue (NxTreeNode as) = toValue as
+  fromValue as = NxTreeNode (fromValue as)
+
+instance ValueType NxPageTreeLevel where
+  toValue (NxPageTreeLevel as) = toValue as
+  fromValue as = NxPageTreeLevel (fromValue as)
+
+instance ValueType NxPageTreeNode where
+  toValue (NxPageTreeNode as) = toValue as
+  fromValue as = NxPageTreeNode (fromValue as)
+
+instance ValueType NxTreeDataOption where
+  toValue (NxTreeDataOption as) = toValue as
+  fromValue as = NxTreeDataOption (fromValue as)
 
 instance ValueType GenericDimensionProperties where
   toValue (GenericDimensionProperties as) = toValue as
@@ -1862,6 +2032,18 @@ instance ValueType NxNotification where
   toValue (NxNotification as) = toValue as
   fromValue as = NxNotification (fromValue as)
 
+instance ValueType NxGetObjectOptions where
+  toValue (NxGetObjectOptions as) = toValue as
+  fromValue as = NxGetObjectOptions (fromValue as)
+
+instance ValueType NxDownloadInfo where
+  toValue (NxDownloadInfo as) = toValue as
+  fromValue as = NxDownloadInfo (fromValue as)
+
+instance ValueType NxDownloadOptions where
+  toValue (NxDownloadOptions as) = toValue as
+  fromValue as = NxDownloadOptions (fromValue as)
+
 instance ValueType NxFieldProperties where
   toValue (NxFieldProperties as) = toValue as
   fromValue as = NxFieldProperties (fromValue as)
@@ -1869,10 +2051,6 @@ instance ValueType NxFieldProperties where
 instance ValueType NxVariableProperties where
   toValue (NxVariableProperties as) = toValue as
   fromValue as = NxVariableProperties (fromValue as)
-
-instance ValueType NxGetQixCounterResult where
-  toValue (NxGetQixCounterResult as) = toValue as
-  fromValue as = NxGetQixCounterResult (fromValue as)
 
 instance ValueType AppEntry where
   toValue (AppEntry as) = toValue as
@@ -1898,37 +2076,25 @@ instance ValueType NxEngineVersion where
   toValue (NxEngineVersion as) = toValue as
   fromValue as = NxEngineVersion (fromValue as)
 
-instance ValueType MemoryUsage where
-  toValue (MemoryUsage as) = toValue as
-  fromValue as = MemoryUsage (fromValue as)
+instance ValueType JSONWebTokenHeader where
+  toValue (JSONWebTokenHeader as) = toValue as
+  fromValue as = JSONWebTokenHeader (fromValue as)
 
-instance ValueType CPUUsage where
-  toValue (CPUUsage as) = toValue as
-  fromValue as = CPUUsage (fromValue as)
+instance ValueType PersistedObjectMeta where
+  toValue (PersistedObjectMeta as) = toValue as
+  fromValue as = PersistedObjectMeta (fromValue as)
 
-instance ValueType SessionUsage where
-  toValue (SessionUsage as) = toValue as
-  fromValue as = SessionUsage (fromValue as)
-
-instance ValueType AppUsage where
-  toValue (AppUsage as) = toValue as
-  fromValue as = AppUsage (fromValue as)
-
-instance ValueType UserUsage where
-  toValue (UserUsage as) = toValue as
-  fromValue as = UserUsage (fromValue as)
-
-instance ValueType CacheUsage where
-  toValue (CacheUsage as) = toValue as
-  fromValue as = CacheUsage (fromValue as)
-
-instance ValueType HealthcheckStatus where
-  toValue (HealthcheckStatus as) = toValue as
-  fromValue as = HealthcheckStatus (fromValue as)
+instance ValueType ObjectInterface where
+  toValue (ObjectInterface as) = toValue as
+  fromValue as = ObjectInterface (fromValue as)
 
 class HasQAccumulate a b | a -> b where
   qAccumulate :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qAccumulate = cp_ "qAccumulate"
+
+class HasQActions a b | a -> b where
+  qActions :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qActions = cp_ "qActions"
 
 class HasQActiveExpression a b | a -> b where
   qActiveExpression :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -1941,6 +2107,10 @@ class HasQActiveField a b | a -> b where
 class HasQAggrFunc a b | a -> b where
   qAggrFunc :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qAggrFunc = cp_ "qAggrFunc"
+
+class HasQAllValues a b | a -> b where
+  qAllValues :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qAllValues = cp_ "qAllValues"
 
 class HasQAlternative a b | a -> b where
   qAlternative :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -1986,6 +2156,10 @@ class HasQAttrExps a b | a -> b where
   qAttrExps :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qAttrExps = cp_ "qAttrExps"
 
+class HasQAttribute a b | a -> b where
+  qAttribute :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qAttribute = cp_ "qAttribute"
+
 class HasQAttributeDimensions a b | a -> b where
   qAttributeDimensions :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qAttributeDimensions = cp_ "qAttributeDimensions"
@@ -2018,6 +2192,10 @@ class HasQBookmark a b | a -> b where
   qBookmark :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qBookmark = cp_ "qBookmark"
 
+class HasQBookmarkId a b | a -> b where
+  qBookmarkId :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qBookmarkId = cp_ "qBookmarkId"
+
 class HasQBottom a b | a -> b where
   qBottom :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qBottom = cp_ "qBottom"
@@ -2042,6 +2220,14 @@ class HasQCalcCond a b | a -> b where
   qCalcCond :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qCalcCond = cp_ "qCalcCond"
 
+class HasQCalcCondMsg a b | a -> b where
+  qCalcCondMsg :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qCalcCondMsg = cp_ "qCalcCondMsg"
+
+class HasQCalcCondition a b | a -> b where
+  qCalcCondition :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qCalcCondition = cp_ "qCalcCondition"
+
 class HasQCalendarStrings a b | a -> b where
   qCalendarStrings :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qCalendarStrings = cp_ "qCalendarStrings"
@@ -2061,6 +2247,10 @@ class HasQCardinal a b | a -> b where
 class HasQCardinalRatio a b | a -> b where
   qCardinalRatio :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qCardinalRatio = cp_ "qCardinalRatio"
+
+class HasQCardinalities a b | a -> b where
+  qCardinalities :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qCardinalities = cp_ "qCardinalities"
 
 class HasQCharCount a b | a -> b where
   qCharCount :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -2086,6 +2276,10 @@ class HasQColorByDisable a b | a -> b where
   qColorByDisable :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qColorByDisable = cp_ "qColorByDisable"
 
+class HasQColumnOrder a b | a -> b where
+  qColumnOrder :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qColumnOrder = cp_ "qColumnOrder"
+
 class HasQColumnsToSelect a b | a -> b where
   qColumnsToSelect :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qColumnsToSelect = cp_ "qColumnsToSelect"
@@ -2097,6 +2291,14 @@ class HasQComment a b | a -> b where
 class HasQComponentVersion a b | a -> b where
   qComponentVersion :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qComponentVersion = cp_ "qComponentVersion"
+
+class HasQCond a b | a -> b where
+  qCond :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qCond = cp_ "qCond"
+
+class HasQContentHash a b | a -> b where
+  qContentHash :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qContentHash = cp_ "qContentHash"
 
 class HasQContext a b | a -> b where
   qContext :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -2154,6 +2356,10 @@ class HasQDefinition a b | a -> b where
   qDefinition :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qDefinition = cp_ "qDefinition"
 
+class HasQDepth a b | a -> b where
+  qDepth :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qDepth = cp_ "qDepth"
+
 class HasQDerivedDefinition a b | a -> b where
   qDerivedDefinition :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qDerivedDefinition = cp_ "qDerivedDefinition"
@@ -2202,6 +2408,10 @@ class HasQDimensionInfo a b | a -> b where
   qDimensionInfo :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qDimensionInfo = cp_ "qDimensionInfo"
 
+class HasQDimensionIx a b | a -> b where
+  qDimensionIx :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qDimensionIx = cp_ "qDimensionIx"
+
 class HasQDimensionType a b | a -> b where
   qDimensionType :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qDimensionType = cp_ "qDimensionType"
@@ -2210,6 +2420,10 @@ class HasQDimensions a b | a -> b where
   qDimensions :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qDimensions = cp_ "qDimensions"
 
+class HasQDiscriminator a b | a -> b where
+  qDiscriminator :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qDiscriminator = cp_ "qDiscriminator"
+
 class HasQDisplayNumberOfRows a b | a -> b where
   qDisplayNumberOfRows :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qDisplayNumberOfRows = cp_ "qDisplayNumberOfRows"
@@ -2217,6 +2431,10 @@ class HasQDisplayNumberOfRows a b | a -> b where
 class HasQDown a b | a -> b where
   qDown :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qDown = cp_ "qDown"
+
+class HasQDstPath a b | a -> b where
+  qDstPath :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qDstPath = cp_ "qDstPath"
 
 class HasQEffectiveInterColumnSortOrder a b | a -> b where
   qEffectiveInterColumnSortOrder :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -2273,6 +2491,10 @@ class HasQExcludedValues a b | a -> b where
 class HasQExcludedValuesCount a b | a -> b where
   qExcludedValuesCount :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qExcludedValuesCount = cp_ "qExcludedValuesCount"
+
+class HasQExpires a b | a -> b where
+  qExpires :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qExpires = cp_ "qExpires"
 
 class HasQExpr a b | a -> b where
   qExpr :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -2354,6 +2576,10 @@ class HasQFileName a b | a -> b where
   qFileName :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qFileName = cp_ "qFileName"
 
+class HasQFileSize a b | a -> b where
+  qFileSize :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qFileSize = cp_ "qFileSize"
+
 class HasQFirstMonthOfYear a b | a -> b where
   qFirstMonthOfYear :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qFirstMonthOfYear = cp_ "qFirstMonthOfYear"
@@ -2370,6 +2596,10 @@ class HasQForceBadValueKeeping a b | a -> b where
   qForceBadValueKeeping :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qForceBadValueKeeping = cp_ "qForceBadValueKeeping"
 
+class HasQFormat a b | a -> b where
+  qFormat :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qFormat = cp_ "qFormat"
+
 class HasQForwardCount a b | a -> b where
   qForwardCount :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qForwardCount = cp_ "qForwardCount"
@@ -2385,6 +2615,14 @@ class HasQFrequencyMode a b | a -> b where
 class HasQFrom a b | a -> b where
   qFrom :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qFrom = cp_ "qFrom"
+
+class HasQGenericId a b | a -> b where
+  qGenericId :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qGenericId = cp_ "qGenericId"
+
+class HasQGenericType a b | a -> b where
+  qGenericType :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qGenericType = cp_ "qGenericType"
 
 class HasQGlobalOtherGrouping a b | a -> b where
   qGlobalOtherGrouping :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -2414,6 +2652,10 @@ class HasQGrouping a b | a -> b where
   qGrouping :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qGrouping = cp_ "qGrouping"
 
+class HasQHandle a b | a -> b where
+  qHandle :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qHandle = cp_ "qHandle"
+
 class HasQHasData a b | a -> b where
   qHasData :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qHasData = cp_ "qHasData"
@@ -2437,6 +2679,10 @@ class HasQHeight a b | a -> b where
 class HasQHighlightRanges a b | a -> b where
   qHighlightRanges :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qHighlightRanges = cp_ "qHighlightRanges"
+
+class HasQHypercubeCardinal a b | a -> b where
+  qHypercubeCardinal :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qHypercubeCardinal = cp_ "qHypercubeCardinal"
 
 class HasQID a b | a -> b where
   qID :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -2462,6 +2708,10 @@ class HasQIncludeInBookmark a b | a -> b where
   qIncludeInBookmark :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qIncludeInBookmark = cp_ "qIncludeInBookmark"
 
+class HasQIncludeSessionObjects a b | a -> b where
+  qIncludeSessionObjects :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qIncludeSessionObjects = cp_ "qIncludeSessionObjects"
+
 class HasQIndentMode a b | a -> b where
   qIndentMode :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qIndentMode = cp_ "qIndentMode"
@@ -2481,6 +2731,10 @@ class HasQInterColumnSortOrder a b | a -> b where
 class HasQIsAutoFormat a b | a -> b where
   qIsAutoFormat :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qIsAutoFormat = cp_ "qIsAutoFormat"
+
+class HasQIsCalculated a b | a -> b where
+  qIsCalculated :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qIsCalculated = cp_ "qIsCalculated"
 
 class HasQIsConfig a b | a -> b where
   qIsConfig :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -2526,6 +2780,10 @@ class HasQIsNumeric a b | a -> b where
   qIsNumeric :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qIsNumeric = cp_ "qIsNumeric"
 
+class HasQIsOneAndOnlyOne a b | a -> b where
+  qIsOneAndOnlyOne :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qIsOneAndOnlyOne = cp_ "qIsOneAndOnlyOne"
+
 class HasQIsOpenedWithoutData a b | a -> b where
   qIsOpenedWithoutData :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qIsOpenedWithoutData = cp_ "qIsOpenedWithoutData"
@@ -2569,6 +2827,10 @@ class HasQKey a b | a -> b where
 class HasQLabel a b | a -> b where
   qLabel :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qLabel = cp_ "qLabel"
+
+class HasQLabelExpression a b | a -> b where
+  qLabelExpression :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qLabelExpression = cp_ "qLabelExpression"
 
 class HasQLastExpandedPos a b | a -> b where
   qLastExpandedPos :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -2638,6 +2900,10 @@ class HasQMaxInclEq a b | a -> b where
   qMaxInclEq :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qMaxInclEq = cp_ "qMaxInclEq"
 
+class HasQMaxNbrOfNodes a b | a -> b where
+  qMaxNbrOfNodes :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qMaxNbrOfNodes = cp_ "qMaxNbrOfNodes"
+
 class HasQMaxNbrTicks a b | a -> b where
   qMaxNbrTicks :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qMaxNbrTicks = cp_ "qMaxNbrTicks"
@@ -2653,6 +2919,10 @@ class HasQMaxPos a b | a -> b where
 class HasQMaxStackedCells a b | a -> b where
   qMaxStackedCells :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qMaxStackedCells = cp_ "qMaxStackedCells"
+
+class HasQMaxText a b | a -> b where
+  qMaxText :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qMaxText = cp_ "qMaxText"
 
 class HasQMeasure a b | a -> b where
   qMeasure :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -2702,6 +2972,10 @@ class HasQMinNeg a b | a -> b where
   qMinNeg :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qMinNeg = cp_ "qMinNeg"
 
+class HasQMinText a b | a -> b where
+  qMinText :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qMinText = cp_ "qMinText"
+
 class HasQMode a b | a -> b where
   qMode :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qMode = cp_ "qMode"
@@ -2726,6 +3000,10 @@ class HasQMonthNames a b | a -> b where
   qMonthNames :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qMonthNames = cp_ "qMonthNames"
 
+class HasQMsg a b | a -> b where
+  qMsg :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qMsg = cp_ "qMsg"
+
 class HasQName a b | a -> b where
   qName :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qName = cp_ "qName"
@@ -2745,6 +3023,18 @@ class HasQNoOfFieldParameters a b | a -> b where
 class HasQNoOfLeftDims a b | a -> b where
   qNoOfLeftDims :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qNoOfLeftDims = cp_ "qNoOfLeftDims"
+
+class HasQNodeNr a b | a -> b where
+  qNodeNr :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qNodeNr = cp_ "qNodeNr"
+
+class HasQNodes a b | a -> b where
+  qNodes :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qNodes = cp_ "qNodes"
+
+class HasQNodesOnDim a b | a -> b where
+  qNodesOnDim :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qNodesOnDim = cp_ "qNodesOnDim"
 
 class HasQNotSelectedFieldSelectionInfo a b | a -> b where
   qNotSelectedFieldSelectionInfo :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -2778,6 +3068,10 @@ class HasQNumberPresentations a b | a -> b where
   qNumberPresentations :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qNumberPresentations = cp_ "qNumberPresentations"
 
+class HasQNumericalAbbreviation a b | a -> b where
+  qNumericalAbbreviation :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qNumericalAbbreviation = cp_ "qNumericalAbbreviation"
+
 class HasQObjectId a b | a -> b where
   qObjectId :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qObjectId = cp_ "qObjectId"
@@ -2789,6 +3083,10 @@ class HasQOneAndOnlyOne a b | a -> b where
 class HasQOp a b | a -> b where
   qOp :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qOp = cp_ "qOp"
+
+class HasQOpenFullyExpanded a b | a -> b where
+  qOpenFullyExpanded :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qOpenFullyExpanded = cp_ "qOpenFullyExpanded"
 
 class HasQOption a b | a -> b where
   qOption :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -2829,6 +3127,14 @@ class HasQOtherTotalSpec a b | a -> b where
 class HasQParameters a b | a -> b where
   qParameters :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qParameters = cp_ "qParameters"
+
+class HasQParentId a b | a -> b where
+  qParentId :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qParentId = cp_ "qParentId"
+
+class HasQParentNode a b | a -> b where
+  qParentNode :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qParentNode = cp_ "qParentNode"
 
 class HasQParentPath a b | a -> b where
   qParentPath :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -2934,6 +3240,10 @@ class HasQRelative a b | a -> b where
   qRelative :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qRelative = cp_ "qRelative"
 
+class HasQRelativeDstPath a b | a -> b where
+  qRelativeDstPath :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qRelativeDstPath = cp_ "qRelativeDstPath"
+
 class HasQReverseSort a b | a -> b where
   qReverseSort :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qReverseSort = cp_ "qReverseSort"
@@ -2986,6 +3296,10 @@ class HasQSearchableProperties a b | a -> b where
   qSearchableProperties :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qSearchableProperties = cp_ "qSearchableProperties"
 
+class HasQSecurityMetaAsBase64 a b | a -> b where
+  qSecurityMetaAsBase64 :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qSecurityMetaAsBase64 = cp_ "qSecurityMetaAsBase64"
+
 class HasQSelectInfo a b | a -> b where
   qSelectInfo :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qSelectInfo = cp_ "qSelectInfo"
@@ -3022,6 +3336,10 @@ class HasQServices a b | a -> b where
   qServices :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qServices = cp_ "qServices"
 
+class HasQSharedStatus a b | a -> b where
+  qSharedStatus :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qSharedStatus = cp_ "qSharedStatus"
+
 class HasQShowAll a b | a -> b where
   qShowAll :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qShowAll = cp_ "qShowAll"
@@ -3057,6 +3375,10 @@ class HasQShowReserved a b | a -> b where
 class HasQShowSemantic a b | a -> b where
   qShowSemantic :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qShowSemantic = cp_ "qShowSemantic"
+
+class HasQShowSession a b | a -> b where
+  qShowSession :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qShowSession = cp_ "qShowSession"
 
 class HasQShowSrcTables a b | a -> b where
   qShowSrcTables :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -3162,6 +3484,10 @@ class HasQStateNames a b | a -> b where
   qStateNames :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qStateNames = cp_ "qStateNames"
 
+class HasQStatement a b | a -> b where
+  qStatement :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qStatement = cp_ "qStatement"
+
 class HasQSubNodes a b | a -> b where
   qSubNodes :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qSubNodes = cp_ "qSubNodes"
@@ -3234,10 +3560,6 @@ class HasQTitle a b | a -> b where
   qTitle :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qTitle = cp_ "qTitle"
 
-class HasQToggleMode a b | a -> b where
-  qToggleMode :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qToggleMode = cp_ "qToggleMode"
-
 class HasQTop a b | a -> b where
   qTop :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qTop = cp_ "qTop"
@@ -3254,9 +3576,29 @@ class HasQTotalMode a b | a -> b where
   qTotalMode :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qTotalMode = cp_ "qTotalMode"
 
+class HasQTreeDataPages a b | a -> b where
+  qTreeDataPages :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qTreeDataPages = cp_ "qTreeDataPages"
+
+class HasQTreeLevels a b | a -> b where
+  qTreeLevels :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qTreeLevels = cp_ "qTreeLevels"
+
+class HasQTreeNodes a b | a -> b where
+  qTreeNodes :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qTreeNodes = cp_ "qTreeNodes"
+
+class HasQTreeNodesOnDim a b | a -> b where
+  qTreeNodesOnDim :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qTreeNodesOnDim = cp_ "qTreeNodesOnDim"
+
 class HasQType a b | a -> b where
   qType :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qType = cp_ "qType"
+
+class HasQTypes a b | a -> b where
+  qTypes :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qTypes = cp_ "qTypes"
 
 class HasQUndoCount a b | a -> b where
   qUndoCount :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -3294,6 +3636,10 @@ class HasQValue a b | a -> b where
   qValue :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qValue = cp_ "qValue"
 
+class HasQValueExprs a b | a -> b where
+  qValueExprs :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qValueExprs = cp_ "qValueExprs"
+
 class HasQValues a b | a -> b where
   qValues :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qValues = cp_ "qValues"
@@ -3314,49 +3660,13 @@ class HasQZoomLevel a b | a -> b where
   qZoomLevel :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qZoomLevel = cp_ "qZoomLevel"
 
-class HasQactive a b | a -> b where
-  qactive :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qactive = cp_ "qactive"
-
-class HasQactive_docs a b | a -> b where
-  qactive_docs :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qactive_docs = cp_ "qactive_docs"
-
-class HasQadded a b | a -> b where
-  qadded :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qadded = cp_ "qadded"
-
-class HasQallocated a b | a -> b where
-  qallocated :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qallocated = cp_ "qallocated"
-
-class HasQapps a b | a -> b where
-  qapps :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qapps = cp_ "qapps"
+class HasQalg a b | a -> b where
+  qalg :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qalg = cp_ "qalg"
 
 class HasQbufferName a b | a -> b where
   qbufferName :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qbufferName = cp_ "qbufferName"
-
-class HasQbytes_added a b | a -> b where
-  qbytes_added :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qbytes_added = cp_ "qbytes_added"
-
-class HasQcache a b | a -> b where
-  qcache :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qcache = cp_ "qcache"
-
-class HasQcalls a b | a -> b where
-  qcalls :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qcalls = cp_ "qcalls"
-
-class HasQcomitted a b | a -> b where
-  qcomitted :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qcomitted = cp_ "qcomitted"
-
-class HasQcpu a b | a -> b where
-  qcpu :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qcpu = cp_ "qcpu"
 
 class HasQcx a b | a -> b where
   qcx :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -3366,61 +3676,21 @@ class HasQcy a b | a -> b where
   qcy :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qcy = cp_ "qcy"
 
-class HasQfree a b | a -> b where
-  qfree :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qfree = cp_ "qfree"
-
-class HasQhits a b | a -> b where
-  qhits :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qhits = cp_ "qhits"
+class HasQkid a b | a -> b where
+  qkid :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qkid = cp_ "qkid"
 
 class HasQlineIx a b | a -> b where
   qlineIx :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qlineIx = cp_ "qlineIx"
 
-class HasQloaded_docs a b | a -> b where
-  qloaded_docs :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qloaded_docs = cp_ "qloaded_docs"
-
-class HasQlookups a b | a -> b where
-  qlookups :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qlookups = cp_ "qlookups"
-
-class HasQmem a b | a -> b where
-  qmem :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qmem = cp_ "qmem"
-
 class HasQnDec a b | a -> b where
   qnDec :: (AbstractStructureContainer a, ValueType b) => Lens' a b
   qnDec = cp_ "qnDec"
 
-class HasQreplaced a b | a -> b where
-  qreplaced :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qreplaced = cp_ "qreplaced"
-
-class HasQselections a b | a -> b where
-  qselections :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qselections = cp_ "qselections"
-
-class HasQsession a b | a -> b where
-  qsession :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qsession = cp_ "qsession"
-
-class HasQstarted a b | a -> b where
-  qstarted :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qstarted = cp_ "qstarted"
-
-class HasQtotal a b | a -> b where
-  qtotal :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qtotal = cp_ "qtotal"
-
-class HasQusers a b | a -> b where
-  qusers :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qusers = cp_ "qusers"
-
-class HasQversion a b | a -> b where
-  qversion :: (AbstractStructureContainer a, ValueType b) => Lens' a b
-  qversion = cp_ "qversion"
+class HasQtyp a b | a -> b where
+  qtyp :: (AbstractStructureContainer a, ValueType b) => Lens' a b
+  qtyp = cp_ "qtyp"
 
 class HasQx a b | a -> b where
   qx :: (AbstractStructureContainer a, ValueType b) => Lens' a b
@@ -3499,6 +3769,9 @@ instance HasQBrokenWeeks LocaleInfo Bool
 instance HasQReferenceDay LocaleInfo Int
 instance HasQFirstMonthOfYear LocaleInfo Int
 instance HasQCollation LocaleInfo String
+instance HasQNumericalAbbreviation LocaleInfo String
+instance HasQDiscriminator LineageInfo String
+instance HasQStatement LineageInfo String
 instance HasQText FieldValue String
 instance HasQIsNumeric FieldValue Bool
 -- instance HasQNumber FieldValue ?
@@ -3550,6 +3823,7 @@ instance HasQIsDefinitionOnly NxFieldDescription Bool
 -- instance HasQDerivedFieldData NxFieldDescription ?
 instance HasQIsDetail NxFieldDescription Bool
 instance HasQIsImplicit NxFieldDescription Bool
+instance HasQReadableName NxFieldDescription String
 instance HasQName NxFieldDescriptor String
 instance HasQExpr NxFieldDescriptor String
 instance HasQUrl StaticContentUrlDef String
@@ -3574,6 +3848,11 @@ instance HasQThumbnail NxAppLayout StaticContentUrl
 instance HasQGrouping NxLibraryDimensionDef NxGrpType
 instance HasQFieldDefs NxLibraryDimensionDef [String]
 instance HasQFieldLabels NxLibraryDimensionDef [String]
+instance HasQLabelExpression NxLibraryDimensionDef String
+instance HasQGrouping NxLibraryDimension NxGrpType
+instance HasQFieldDefs NxLibraryDimension [String]
+instance HasQFieldLabels NxLibraryDimension [String]
+instance HasQLabelExpression NxLibraryDimension String
 instance HasQGrouping NxInlineDimensionDef NxGrpType
 instance HasQFieldDefs NxInlineDimensionDef [String]
 instance HasQFieldLabels NxInlineDimensionDef [String]
@@ -3581,6 +3860,9 @@ instance HasQSortCriterias NxInlineDimensionDef [SortCriteria]
 instance HasQNumberPresentations NxInlineDimensionDef [FieldAttributes]
 instance HasQReverseSort NxInlineDimensionDef Bool
 instance HasQActiveField NxInlineDimensionDef Int
+instance HasQLabelExpression NxInlineDimensionDef String
+instance HasQCond NxCalcCond ValueExpr
+instance HasQMsg NxCalcCond StringExpr
 instance HasQLibraryId NxDimension String
 instance HasQDef NxDimension NxInlineDimensionDef
 instance HasQNullSuppression NxDimension Bool
@@ -3593,11 +3875,30 @@ instance HasQTotalLabel NxDimension StringExpr
 instance HasQCalcCond NxDimension ValueExpr
 instance HasQAttributeExpressions NxDimension [NxAttrExprDef]
 instance HasQAttributeDimensions NxDimension [NxAttrDimDef]
+instance HasQCalcCondition NxDimension NxCalcCond
+instance HasQLibraryId NxTreeDimensionDef String
+instance HasQDef NxTreeDimensionDef NxInlineDimensionDef
+instance HasQValueExprs NxTreeDimensionDef [NxMeasure]
+instance HasQNullSuppression NxTreeDimensionDef Bool
+instance HasQOtherTotalSpec NxTreeDimensionDef OtherTotalSpecProp
+instance HasQShowAll NxTreeDimensionDef Bool
+instance HasQOtherLabel NxTreeDimensionDef StringExpr
+instance HasQTotalLabel NxTreeDimensionDef StringExpr
+instance HasQCalcCondition NxTreeDimensionDef NxCalcCond
+instance HasQAttributeExpressions NxTreeDimensionDef [NxAttrExprDef]
+instance HasQAttributeDimensions NxTreeDimensionDef [NxAttrDimDef]
 instance HasQLabel NxLibraryMeasureDef String
 instance HasQDef NxLibraryMeasureDef String
 instance HasQGrouping NxLibraryMeasureDef NxGrpType
 instance HasQExpressions NxLibraryMeasureDef [String]
 instance HasQActiveExpression NxLibraryMeasureDef Int
+instance HasQLabelExpression NxLibraryMeasureDef String
+instance HasQLabel NxLibraryMeasure String
+instance HasQDef NxLibraryMeasure String
+instance HasQGrouping NxLibraryMeasure NxGrpType
+instance HasQExpressions NxLibraryMeasure [String]
+instance HasQActiveExpression NxLibraryMeasure Int
+instance HasQLabelExpression NxLibraryMeasure String
 instance HasQLabel NxInlineMeasureDef String
 instance HasQDescription NxInlineMeasureDef String
 instance HasQTags NxInlineMeasureDef [String]
@@ -3611,25 +3912,32 @@ instance HasQAccumulate NxInlineMeasureDef Int
 instance HasQReverseSort NxInlineMeasureDef Bool
 instance HasQActiveExpression NxInlineMeasureDef Int
 instance HasQExpressions NxInlineMeasureDef [String]
+instance HasQLabelExpression NxInlineMeasureDef String
 instance HasQExpression NxAttrExprDef String
 instance HasQLibraryId NxAttrExprDef String
+instance HasQAttribute NxAttrExprDef Bool
 -- instance HasQMin NxAttrExprInfo ?
 -- instance HasQMax NxAttrExprInfo ?
 instance HasQFallbackTitle NxAttrExprInfo String
+instance HasQMinText NxAttrExprInfo String
+instance HasQMaxText NxAttrExprInfo String
 instance HasQDef NxAttrDimDef String
 instance HasQLibraryId NxAttrDimDef String
 instance HasQSortBy NxAttrDimDef SortCriteria
+instance HasQAttribute NxAttrDimDef Bool
 instance HasQCardinal NxAttrDimInfo Int
 instance HasQSize NxAttrDimInfo Size
 instance HasQFallbackTitle NxAttrDimInfo String
 instance HasQLocked NxAttrDimInfo Bool
 -- instance HasQError NxAttrDimInfo ?
+instance HasQIsCalculated NxAttrDimInfo Bool
 instance HasQLibraryId NxMeasure String
 instance HasQDef NxMeasure NxInlineMeasureDef
 instance HasQSortBy NxMeasure SortCriteria
 instance HasQAttributeExpressions NxMeasure [NxAttrExprDef]
 instance HasQAttributeDimensions NxMeasure [NxAttrDimDef]
 instance HasQCalcCond NxMeasure ValueExpr
+instance HasQCalcCondition NxMeasure NxCalcCond
 instance HasQRanges NxHighlightRanges [CharRange]
 instance HasQText NxSimpleValue String
 -- instance HasQNum NxSimpleValue ?
@@ -3696,6 +4004,8 @@ instance HasQValue JsonProperty String
 instance HasQInfo NxContainerEntry NxInfo
 -- instance HasQMeta NxContainerEntry ?
 instance HasQData NxContainerEntry JsonObject
+instance HasQCardinal NxCardinalities Int
+instance HasQHypercubeCardinal NxCardinalities Int
 instance HasQFallbackTitle NxDimensionInfo String
 instance HasQApprMaxGlyphCount NxDimensionInfo Int
 instance HasQCardinal NxDimensionInfo Int
@@ -3720,6 +4030,39 @@ instance HasQIsCyclic NxDimensionInfo Bool
 instance HasQDerivedField NxDimensionInfo Bool
 instance HasQAttrExprInfo NxDimensionInfo [NxAttrExprInfo]
 instance HasQAttrDimInfo NxDimensionInfo [NxAttrDimInfo]
+instance HasQCalcCondMsg NxDimensionInfo String
+instance HasQIsCalculated NxDimensionInfo Bool
+instance HasQIsOneAndOnlyOne NxDimensionInfo Bool
+instance HasQCardinalities NxDimensionInfo NxCardinalities
+instance HasQFallbackTitle NxTreeDimensionInfo String
+instance HasQApprMaxGlyphCount NxTreeDimensionInfo Int
+instance HasQCardinal NxTreeDimensionInfo Int
+instance HasQLocked NxTreeDimensionInfo Bool
+instance HasQSortIndicator NxTreeDimensionInfo NxSortIndicatorType
+instance HasQGroupFallbackTitles NxTreeDimensionInfo [String]
+instance HasQGroupPos NxTreeDimensionInfo Int
+instance HasQStateCounts NxTreeDimensionInfo NxStateCounts
+instance HasQTags NxTreeDimensionInfo [String]
+-- instance HasQError NxTreeDimensionInfo ?
+instance HasQDimensionType NxTreeDimensionInfo NxDimensionType
+instance HasQReverseSort NxTreeDimensionInfo Bool
+instance HasQGrouping NxTreeDimensionInfo NxGrpType
+instance HasQIsSemantic NxTreeDimensionInfo Bool
+instance HasQNumFormat NxTreeDimensionInfo FieldAttributes
+instance HasQIsAutoFormat NxTreeDimensionInfo Bool
+instance HasQGroupFieldDefs NxTreeDimensionInfo [String]
+-- instance HasQMin NxTreeDimensionInfo ?
+-- instance HasQMax NxTreeDimensionInfo ?
+instance HasQContinuousAxes NxTreeDimensionInfo Bool
+instance HasQIsCyclic NxTreeDimensionInfo Bool
+instance HasQDerivedField NxTreeDimensionInfo Bool
+instance HasQMeasureInfo NxTreeDimensionInfo [NxMeasureInfo]
+instance HasQAttrExprInfo NxTreeDimensionInfo [NxAttrExprInfo]
+instance HasQAttrDimInfo NxTreeDimensionInfo [NxAttrDimInfo]
+instance HasQCalcCondMsg NxTreeDimensionInfo String
+instance HasQIsCalculated NxTreeDimensionInfo Bool
+instance HasQIsOneAndOnlyOne NxTreeDimensionInfo Bool
+instance HasQCardinalities NxTreeDimensionInfo NxCardinalities
 instance HasQFallbackTitle NxMeasureInfo String
 instance HasQApprMaxGlyphCount NxMeasureInfo Int
 instance HasQCardinal NxMeasureInfo Int
@@ -3732,9 +4075,12 @@ instance HasQReverseSort NxMeasureInfo Bool
 instance HasQIsAutoFormat NxMeasureInfo Bool
 instance HasQAttrExprInfo NxMeasureInfo [NxAttrExprInfo]
 instance HasQAttrDimInfo NxMeasureInfo [NxAttrDimInfo]
+instance HasQCalcCondMsg NxMeasureInfo String
 instance HasQScript AppScriptObject String
 instance HasQBreakpointList AppScriptObject [EditorBreakpoint]
 instance HasQFavoriteVariables AppScriptObject [String]
+instance HasQScript AppScript String
+-- instance HasQMeta AppScript ?
 instance HasQName NxFieldSelectionInfo String
 instance HasQFieldSelectionMode NxFieldSelectionInfo NxFieldSelectionMode
 instance HasQTotal NxCurrentSelectionItem Int
@@ -3757,6 +4103,10 @@ instance HasQRange NxRangeSelectInfo Range
 instance HasQMeasureIx NxRangeSelectInfo Int
 instance HasQRanges NxMultiRangeSelectInfo [NxRangeSelectInfo]
 instance HasQColumnsToSelect NxMultiRangeSelectInfo [Int]
+instance HasQRange NxTreeRangeSelectInfo Range
+instance HasQMeasureIx NxTreeRangeSelectInfo Int
+instance HasQDimensionIx NxTreeRangeSelectInfo Int
+instance HasQRanges NxTreeMultiRangeSelectInfo [NxTreeRangeSelectInfo]
 instance HasQRange NxContinuousRangeSelectInfo Range
 instance HasQDimIx NxContinuousRangeSelectInfo Int
 instance HasQDisplayNumberOfRows NxAutoSortByStateDef Int
@@ -3820,6 +4170,8 @@ instance HasQIndentMode HyperCubeDef Bool
 instance HasQCalcCond HyperCubeDef ValueExpr
 -- instance HasQSortbyYValue HyperCubeDef ?
 instance HasQTitle HyperCubeDef StringExpr
+instance HasQCalcCondition HyperCubeDef NxCalcCond
+instance HasQColumnOrder HyperCubeDef [Int]
 instance HasQStateName HyperCube String
 instance HasQSize HyperCube Size
 -- instance HasQError HyperCube ?
@@ -3836,6 +4188,29 @@ instance HasQIndentMode HyperCube Bool
 -- instance HasQLastExpandedPos HyperCube ?
 instance HasQHasOtherValues HyperCube Bool
 instance HasQTitle HyperCube String
+instance HasQTreeNodesOnDim HyperCube [Int]
+instance HasQCalcCondMsg HyperCube String
+instance HasQColumnOrder HyperCube [Int]
+instance HasQStateName TreeDataDef String
+instance HasQDimensions TreeDataDef [NxTreeDimensionDef]
+instance HasQInterColumnSortOrder TreeDataDef [Int]
+instance HasQSuppressZero TreeDataDef Bool
+instance HasQSuppressMissing TreeDataDef Bool
+instance HasQOpenFullyExpanded TreeDataDef Bool
+instance HasQPopulateMissing TreeDataDef Bool
+instance HasQCalcCondition TreeDataDef NxCalcCond
+instance HasQTitle TreeDataDef StringExpr
+instance HasQInitialDataFetch TreeDataDef [NxTreeDataOption]
+instance HasQStateName TreeData String
+instance HasQNodesOnDim TreeData [Int]
+-- instance HasQError TreeData ?
+instance HasQDimensionInfo TreeData [NxTreeDimensionInfo]
+instance HasQEffectiveInterColumnSortOrder TreeData [Int]
+instance HasQHasOtherValues TreeData Bool
+instance HasQTitle TreeData String
+-- instance HasQLastExpandedPos TreeData ?
+instance HasQCalcCondMsg TreeData String
+instance HasQTreeDataPages TreeData [NxTreeNode]
 instance HasQData ChildListDef JsonObject
 instance HasQItems ChildList [NxContainerEntry]
 instance HasQType AppObjectListDef String
@@ -3856,6 +4231,7 @@ instance HasQType VariableListDef String
 instance HasQShowReserved VariableListDef Bool
 instance HasQShowConfig VariableListDef Bool
 instance HasQData VariableListDef JsonObject
+instance HasQShowSession VariableListDef Bool
 instance HasQName NxVariableListItem String
 instance HasQDescription NxVariableListItem String
 instance HasQDefinition NxVariableListItem String
@@ -3890,17 +4266,20 @@ instance HasQStateName SelectionObjectDef String
 instance HasQBackCount SelectionObject Int
 instance HasQForwardCount SelectionObject Int
 instance HasQSelections SelectionObject [NxCurrentSelectionItem]
+instance HasQStateName SelectionObject String
 instance HasQInSelections NxSelectionInfo Bool
 instance HasQMadeSelections NxSelectionInfo Bool
 instance HasQInfo GenericObjectProperties NxInfo
 instance HasQExtendsId GenericObjectProperties String
 instance HasQMetaDef GenericObjectProperties NxMetaDef
+instance HasQStateName GenericObjectProperties String
 instance HasQInfo GenericObjectLayout NxInfo
 -- instance HasQMeta GenericObjectLayout ?
 instance HasQExtendsId GenericObjectLayout String
 instance HasQHasSoftPatches GenericObjectLayout Bool
 -- instance HasQError GenericObjectLayout ?
 instance HasQSelectionInfo GenericObjectLayout NxSelectionInfo
+instance HasQStateName GenericObjectLayout String
 instance HasQType GenericAppObjectMetaData String
 instance HasQId GenericAppObjectMetaData String
 instance HasQProperty GenericObjectEntry GenericObjectProperties
@@ -3913,10 +4292,6 @@ instance HasQType NxQvfBundledItem String
 instance HasQOp NxPatch NxPatchOperationType
 instance HasQPath NxPatch String
 instance HasQValue NxPatch String
-instance HasQPath NxListObjectSelect String
-instance HasQToggleMode NxListObjectSelect Bool
-instance HasQSoftLock NxListObjectSelect Bool
-instance HasQValues NxListObjectSelect [Int]
 instance HasQType NxSelectionCell NxSelectionCellType
 instance HasQCol NxSelectionCell Int
 instance HasQRow NxSelectionCell Int
@@ -3948,6 +4323,29 @@ instance HasQName NxAxisTicks String
 instance HasQTags NxAxisTicks [String]
 instance HasQTicks NxAxisTicks [NxTickCell]
 instance HasQAxis NxAxisData [NxAxisTicks]
+instance HasQTypes NxGetBookmarkOptions [String]
+instance HasQData NxGetBookmarkOptions JsonObject
+instance HasQText NxTreeValue String
+-- instance HasQValue NxTreeValue ?
+-- instance HasQAttrExps NxTreeValue ?
+-- instance HasQAttrDims NxTreeValue ?
+instance HasQText NxTreeNode String
+instance HasQElemNo NxTreeNode Int
+instance HasQNodeNr NxTreeNode Int
+instance HasQParentNode NxTreeNode Int
+instance HasQRow NxTreeNode Int
+instance HasQType NxTreeNode NxDimCellType
+instance HasQValues NxTreeNode [NxTreeValue]
+instance HasQNodes NxTreeNode [NxTreeNode]
+-- instance HasQAttrExps NxTreeNode ?
+-- instance HasQAttrDims NxTreeNode ?
+instance HasQLeft NxPageTreeLevel Int
+instance HasQDepth NxPageTreeLevel Int
+instance HasQArea NxPageTreeNode Rect
+instance HasQAllValues NxPageTreeNode Bool
+instance HasQMaxNbrOfNodes NxTreeDataOption Int
+instance HasQTreeNodes NxTreeDataOption [NxPageTreeNode]
+instance HasQTreeLevels NxTreeDataOption NxPageTreeLevel
 instance HasQInfo GenericDimensionProperties NxInfo
 instance HasQDim GenericDimensionProperties NxLibraryDimensionDef
 instance HasQMetaDef GenericDimensionProperties NxMetaDef
@@ -3958,7 +4356,7 @@ instance HasQIsSemantic GenericDimensionInfo Bool
 instance HasQAndMode GenericDimensionInfo Bool
 instance HasQInfo GenericDimensionLayout NxInfo
 -- instance HasQMeta GenericDimensionLayout ?
-instance HasQDim GenericDimensionLayout NxLibraryDimensionDef
+instance HasQDim GenericDimensionLayout NxLibraryDimension
 instance HasQDimInfos GenericDimensionLayout [GenericDimensionInfo]
 instance HasQStateData NxBookmark [AlternateStateData]
 -- instance HasQUtcModifyTime NxBookmark ?
@@ -3999,7 +4397,7 @@ instance HasQInfo GenericMeasureProperties NxInfo
 instance HasQMeasure GenericMeasureProperties NxLibraryMeasureDef
 instance HasQMetaDef GenericMeasureProperties NxMetaDef
 instance HasQInfo GenericMeasureLayout NxInfo
-instance HasQMeasure GenericMeasureLayout NxLibraryMeasureDef
+instance HasQMeasure GenericMeasureLayout NxLibraryMeasure
 -- instance HasQMeta GenericMeasureLayout ?
 instance HasQName NxFieldDerivedDefinition String
 instance HasQExpression NxFieldDerivedDefinition String
@@ -4052,6 +4450,7 @@ instance HasQNbrFieldParameters NxDerivedDefinitionInfo Int
 instance HasQName NxMatchingFieldInfo String
 instance HasQTags NxMatchingFieldInfo [String]
 instance HasQFieldName FieldScores String
+instance HasQReadableName FieldScores String
 -- instance HasQCardinalRatio FieldScores ?
 -- instance HasQSymbolScore FieldScores ?
 -- instance HasQRowScore FieldScores ?
@@ -4068,14 +4467,20 @@ instance HasQObjectId NxNotification String
 instance HasQQixType NxNotification String
 -- instance HasQBuf NxNotification [?]
 instance HasQMeta NxNotification NxMeta
+instance HasQActions NxNotification Integer
+instance HasQTypes NxGetObjectOptions [String]
+instance HasQIncludeSessionObjects NxGetObjectOptions Bool
+instance HasQData NxGetObjectOptions JsonObject
+instance HasQUrl NxDownloadInfo String
+instance HasQFileSize NxDownloadInfo Int
+instance HasQBookmarkId NxDownloadOptions String
+instance HasQExpires NxDownloadOptions Int
 instance HasQOneAndOnlyOne NxFieldProperties Bool
 instance HasQName NxVariableProperties String
 instance HasQNumberPresentation NxVariableProperties FieldAttributes
 instance HasQIncludeInBookmark NxVariableProperties Bool
 instance HasQUsePredefListedValues NxVariableProperties Bool
 instance HasQPreDefinedList NxVariableProperties [String]
-instance HasQName NxGetQixCounterResult String
-instance HasQValue NxGetQixCounterResult Int
 instance HasQID AppEntry String
 instance HasQTitle AppEntry String
 instance HasQPath AppEntry String
@@ -4083,6 +4488,7 @@ instance HasQLastReloadTime AppEntry String
 instance HasQReadOnly AppEntry Bool
 instance HasQMeta AppEntry NxMeta
 instance HasQThumbnail AppEntry StaticContentUrl
+instance HasQFileSize AppEntry Integer
 instance HasQIsDesktop NxFeatureConfiguration Bool
 instance HasQAutoSave NxFeatureConfiguration Bool
 instance HasQPublishing NxFeatureConfiguration Bool
@@ -4097,31 +4503,23 @@ instance HasQFeatures NxConfigurationInfo NxFeatureConfiguration
 instance HasQServices NxConfigurationInfo [NxServiceConfiguration]
 instance HasQSystemProperties NxConfigurationInfo NxSystemProperties
 instance HasQComponentVersion NxEngineVersion String
--- instance HasQcomitted MemoryUsage ?
--- instance HasQallocated MemoryUsage ?
--- instance HasQfree MemoryUsage ?
--- instance HasQtotal CPUUsage ?
-instance HasQactive SessionUsage Int
-instance HasQtotal SessionUsage Int
-instance HasQactive_docs AppUsage [String]
-instance HasQloaded_docs AppUsage [String]
-instance HasQcalls AppUsage Int
-instance HasQselections AppUsage Int
-instance HasQactive UserUsage Int
-instance HasQtotal UserUsage Int
-instance HasQhits CacheUsage Int
-instance HasQlookups CacheUsage Int
-instance HasQadded CacheUsage Int
-instance HasQreplaced CacheUsage Int
-instance HasQbytes_added CacheUsage Int
-instance HasQversion HealthcheckStatus String
-instance HasQstarted HealthcheckStatus String
-instance HasQmem HealthcheckStatus MemoryUsage
-instance HasQcpu HealthcheckStatus CPUUsage
-instance HasQsession HealthcheckStatus SessionUsage
-instance HasQapps HealthcheckStatus AppUsage
-instance HasQusers HealthcheckStatus UserUsage
-instance HasQcache HealthcheckStatus CacheUsage
+instance HasQtyp JSONWebTokenHeader String
+instance HasQalg JSONWebTokenHeader String
+instance HasQkid JSONWebTokenHeader String
+instance HasQContentHash PersistedObjectMeta String
+instance HasQFormat PersistedObjectMeta String
+instance HasQParentId PersistedObjectMeta String
+instance HasQTitle PersistedObjectMeta String
+instance HasQType PersistedObjectMeta String
+instance HasQSharedStatus PersistedObjectMeta String
+instance HasQDstPath PersistedObjectMeta String
+instance HasQRelativeDstPath PersistedObjectMeta String
+instance HasQUrl PersistedObjectMeta String
+instance HasQSecurityMetaAsBase64 PersistedObjectMeta String
+instance HasQType ObjectInterface String
+instance HasQHandle ObjectInterface Int
+instance HasQGenericType ObjectInterface String
+instance HasQGenericId ObjectInterface String
 type NxCellRows = [ NxCell ]
 type ArrayOfNxValuePoint = [ NxPivotValuePoint ]
 type SearchAttributeArray = [ SearchAttribute ]
@@ -4132,21 +4530,22 @@ data OtherMode = OTHER_OFF | OTHER_COUNTED | OTHER_ABS_LIMITED | OTHER_ABS_ACC_T
 data OtherLimitMode = OTHER_GE_LIMIT | OTHER_LE_LIMIT | OTHER_GT_LIMIT | OTHER_LT_LIMIT deriving (Show, Read, Eq, Ord, Enum)
 data FieldAttrType = UNKNOWN | ASCII | INTEGER | REAL | FIX | MONEY | DATE | TIME | TIMESTAMP | INTERVAL deriving (Show, Read, Eq, Ord, Enum)
 data StateEnumType = LOCKED | SELECTED | OPTION | DESELECTED | ALTERNATIVE | EXCLUDED | EXCL_SELECTED | EXCL_LOCKED | NSTATES deriving (Show, Read, Eq, Ord, Enum)
-data NxLocalizedErrorCode = LOCERR_INTERNAL_ERROR | LOCERR_GENERIC_UNKNOWN | LOCERR_GENERIC_OK | LOCERR_GENERIC_NOT_SET | LOCERR_GENERIC_NOT_FOUND | LOCERR_GENERIC_ALREADY_EXISTS | LOCERR_GENERIC_INVALID_PATH | LOCERR_GENERIC_ACCESS_DENIED | LOCERR_GENERIC_OUT_OF_MEMORY | LOCERR_GENERIC_NOT_INITIALIZED | LOCERR_GENERIC_INVALID_PARAMETERS | LOCERR_GENERIC_EMPTY_PARAMETERS | LOCERR_GENERIC_INTERNAL_ERROR | LOCERR_GENERIC_CORRUPT_DATA | LOCERR_GENERIC_MEMORY_INCONSISTENCY | LOCERR_GENERIC_INVISIBLE_OWNER_ABORT | LOCERR_GENERIC_PROHIBIT_VALIDATE | LOCERR_GENERIC_ABORTED | LOCERR_GENERIC_CONNECTION_LOST | LOCERR_GENERIC_UNSUPPORTED_IN_PRODUCT_VERSION | LOCERR_GENERIC_REST_CONNECTION_FAILURE | LOCERR_HTTP_400 | LOCERR_HTTP_401 | LOCERR_HTTP_402 | LOCERR_HTTP_403 | LOCERR_HTTP_404 | LOCERR_HTTP_405 | LOCERR_HTTP_406 | LOCERR_HTTP_407 | LOCERR_HTTP_408 | LOCERR_HTTP_409 | LOCERR_HTTP_410 | LOCERR_HTTP_411 | LOCERR_HTTP_412 | LOCERR_HTTP_413 | LOCERR_HTTP_414 | LOCERR_HTTP_415 | LOCERR_HTTP_416 | LOCERR_HTTP_417 | LOCERR_HTTP_500 | LOCERR_HTTP_501 | LOCERR_HTTP_502 | LOCERR_HTTP_503 | LOCERR_HTTP_504 | LOCERR_HTTP_505 | LOCERR_HTTP_509 | LOCERR_HTTP_COULDNT_RESOLVE_HOST | LOCERR_APP_ALREADY_EXISTS | LOCERR_APP_INVALID_NAME | LOCERR_APP_ALREADY_OPEN | LOCERR_APP_NOT_FOUND | LOCERR_APP_IMPORT_FAILED | LOCERR_APP_SAVE_FAILED | LOCERR_APP_CREATE_FAILED | LOCERR_APP_INVALID | LOCERR_APP_CONNECT_FAILED | LOCERR_APP_ALREADY_OPEN_IN_DIFFERENT_MODE | LOCERR_APP_MIGRATION_COULD_NOT_CONTACT_MIGRATION_SERVICE | LOCERR_APP_MIGRATION_COULD_NOT_START_MIGRATION | LOCERR_APP_MIGRATION_FAILURE | LOCERR_APP_SCRIPT_MISSING | LOCERR_CONNECTION_ALREADY_EXISTS | LOCERR_CONNECTION_NOT_FOUND | LOCERR_CONNECTION_FAILED_TO_LOAD | LOCERR_CONNECTION_FAILED_TO_IMPORT | LOCERR_CONNECTION_NAME_IS_INVALID | LOCERR_FILE_ACCESS_DENIED | LOCERR_FILE_NAME_INVALID | LOCERR_FILE_CORRUPT | LOCERR_FILE_NOT_FOUND | LOCERR_FILE_FORMAT_UNSUPPORTED | LOCERR_FILE_OPENED_IN_UNSUPPORTED_MODE | LOCERR_FILE_TABLE_NOT_FOUND | LOCERR_USER_ACCESS_DENIED | LOCERR_USER_IMPERSONATION_FAILED | LOCERR_SERVER_OUT_OF_SESSION_AND_USER_CALS | LOCERR_SERVER_OUT_OF_SESSION_CALS | LOCERR_SERVER_OUT_OF_USAGE_CALS | LOCERR_SERVER_OUT_OF_CALS | LOCERR_SERVER_OUT_OF_NAMED_CALS | LOCERR_SERVER_OFF_DUTY | LOCERR_SERVER_BUSY | LOCERR_SERVER_LICENSE_EXPIRED | LOCERR_SERVER_AJAX_DISABLED | LOCERR_HC_INVALID_OBJECT | LOCERR_HC_RESULT_TOO_LARGE | LOCERR_HC_INVALID_OBJECT_STATE | LOCERR_HC_MODAL_OBJECT_ERROR | LOCERR_CALC_INVALID_DEF | LOCERR_CALC_NOT_IN_LIB | LOCERR_CALC_HEAP_ERROR | LOCERR_CALC_TOO_LARGE | LOCERR_CALC_TIMEOUT | LOCERR_CALC_EVAL_CONDITION_FAILED | LOCERR_CALC_MIXED_LINKED_AGGREGATION | LOCERR_CALC_MISSING_LINKED | LOCERR_CALC_INVALID_COL_SORT | LOCERR_CALC_PAGES_TOO_LARGE | LOCERR_CALC_SEMANTIC_FIELD_NOT_ALLOWED | LOCERR_CALC_VALIDATION_STATE_INVALID | LOCERR_CALC_PIVOT_DIMENSIONS_ALREADY_EXISTS | LOCERR_CALC_MISSING_LINKED_FIELD | LOCERR_CALC_NOT_CALCULATED | LOCERR_LAYOUT_EXTENDS_INVALID_ID | LOCERR_LAYOUT_LINKED_OBJECT_NOT_FOUND | LOCERR_LAYOUT_LINKED_OBJECT_INVALID | LOCERR_PERSISTENCE_WRITE_FAILED | LOCERR_PERSISTENCE_READ_FAILED | LOCERR_PERSISTENCE_DELETE_FAILED | LOCERR_PERSISTENCE_NOT_FOUND | LOCERR_PERSISTENCE_UNSUPPORTED_VERSION | LOCERR_PERSISTENCE_MIGRATION_FAILED_READ_ONLY | LOCERR_PERSISTENCE_MIGRATION_CANCELLED | LOCERR_PERSISTENCE_MIGRATION_BACKUP_FAILED | LOCERR_PERSISTENCE_DISK_FULL | LOCERR_PERSISTENCE_NOT_SUPPORTED_FOR_SESSION_APP | LOCERR_PERSISTENCE_SYNC_SET_CHUNK_INVALID_PARAMETERS | LOCERR_PERSISTENCE_SYNC_GET_CHUNK_INVALID_PARAMETERS | LOCERR_SCRIPT_DATASOURCE_ACCESS_DENIED | LOCERR_RELOAD_IN_PROGRESS | LOCERR_RELOAD_TABLE_X_NOT_FOUND | LOCERR_RELOAD_UNKNOWN_STATEMENT | LOCERR_RELOAD_EXPECTED_SOMETHING_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_NOTHING_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_1_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_2_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_3_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_4_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_5_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_6_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_7_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_8_OR_MORE_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_FIELD_X_NOT_FOUND | LOCERR_RELOAD_MAPPING_TABLE_X_NOT_FOUND | LOCERR_RELOAD_LIB_CONNECTION_X_NOT_FOUND | LOCERR_RELOAD_NAME_ALREADY_TAKEN | LOCERR_RELOAD_WRONG_FILE_FORMAT_DIF | LOCERR_RELOAD_WRONG_FILE_FORMAT_BIFF | LOCERR_RELOAD_WRONG_FILE_FORMAT_ENCRYPTED | LOCERR_RELOAD_OPEN_FILE_ERROR | LOCERR_RELOAD_AUTO_GENERATE_COUNT | LOCERR_RELOAD_PE_ILLEGAL_PREFIX_COMB | LOCERR_RELOAD_MATCHING_CONTROL_STATEMENT_ERROR | LOCERR_RELOAD_MATCHING_LIBPATH_X_NOT_FOUND | LOCERR_RELOAD_MATCHING_LIBPATH_X_INVALID | LOCERR_RELOAD_MATCHING_LIBPATH_X_OUTSIDE | LOCERR_RELOAD_NO_QUALIFIED_PATH_FOR_FILE | LOCERR_RELOAD_MODE_STATEMENT_ONLY_FOR_LIB_PATHS | LOCERR_RELOAD_INCONSISTENT_USE_OF_SEMANTIC_FIELDS | LOCERR_RELOAD_NO_OPEN_DATABASE | LOCERR_RELOAD_AGGREGATION_REQUIRED_BY_GROUP_BY | LOCERR_RELOAD_CONNECT_MUST_USE_LIB_PREFIX_IN_THIS_MODE | LOCERR_RELOAD_ODBC_CONNECT_FAILED | LOCERR_RELOAD_OLEDB_CONNECT_FAILED | LOCERR_RELOAD_CUSTOM_CONNECT_FAILED | LOCERR_RELOAD_ODBC_READ_FAILED | LOCERR_RELOAD_OLEDB_READ_FAILED | LOCERR_RELOAD_CUSTOM_READ_FAILED | LOCERR_RELOAD_BINARY_LOAD_PROHIBITED | LOCERR_RELOAD_CONNECTOR_START_FAILED | LOCERR_RELOAD_CONNECTOR_NOT_RESPONDING | LOCERR_RELOAD_CONNECTOR_REPLY_ERROR | LOCERR_RELOAD_CONNECTOR_CONNECT_ERROR | LOCERR_PERSONAL_NEW_VERSION_AVAILABLE | LOCERR_PERSONAL_VERSION_EXPIRED | LOCERR_PERSONAL_SECTION_ACCESS_DETECTED | LOCERR_PERSONAL_APP_DELETION_FAILED | LOCERR_USER_AUTHENTICATION_FAILURE | LOCERR_EXPORT_OUT_OF_MEMORY | LOCERR_EXPORT_NO_DATA | LOCERR_SYNC_INVALID_OFFSET | LOCERR_SEARCH_TIMEOUT | LOCERR_DIRECT_DISCOVERY_LINKED_EXPRESSION_FAIL | LOCERR_DIRECT_DISCOVERY_ROWCOUNT_OVERFLOW | LOCERR_DIRECT_DISCOVERY_EMPTY_RESULT | LOCERR_DIRECT_DISCOVERY_DB_CONNECTION_FAILED | LOCERR_DIRECT_DISCOVERY_MEASURE_NOT_ALLOWED | LOCERR_DIRECT_DISCOVERY_DETAIL_NOT_ALLOWED | LOCERR_DIRECT_DISCOVERY_NOT_SYNTH_CIRCULAR_ALLOWED | LOCERR_DIRECT_DISCOVERY_ONLY_ONE_DD_TABLE_ALLOWED | LOCERR_DIRECT_DISCOVERY_DB_AUTHORIZATION_FAILED | LOCERR_SMART_LOAD_TABLE_NOT_FOUND | LOCERR_SMART_LOAD_TABLE_DUPLICATED | LOCERR_VARIABLE_NO_NAME | LOCERR_VARIABLE_DUPLICATE_NAME | LOCERR_VARIABLE_INCONSISTENCY | LOCERR_MEDIA_LIBRARY_LIST_FAILED | LOCERR_MEDIA_LIBRARY_CONTENT_FAILED | LOCERR_MEDIA_BUNDLING_FAILED | LOCERR_MEDIA_UNBUNDLING_FAILED | LOCERR_MEDIA_LIBRARY_NOT_FOUND | LOCERR_FEATURE_DISABLED | LOCERR_JSON_RPC_INVALID_REQUEST | LOCERR_JSON_RPC_METHOD_NOT_FOUND | LOCERR_JSON_RPC_INVALID_PARAMETERS | LOCERR_JSON_RPC_INTERNAL_ERROR | LOCERR_JSON_RPC_PARSE_ERROR deriving (Show, Read, Eq, Ord, Enum)
+data NxLocalizedErrorCode = LOCERR_INTERNAL_ERROR | LOCERR_GENERIC_UNKNOWN | LOCERR_GENERIC_OK | LOCERR_GENERIC_NOT_SET | LOCERR_GENERIC_NOT_FOUND | LOCERR_GENERIC_ALREADY_EXISTS | LOCERR_GENERIC_INVALID_PATH | LOCERR_GENERIC_ACCESS_DENIED | LOCERR_GENERIC_OUT_OF_MEMORY | LOCERR_GENERIC_NOT_INITIALIZED | LOCERR_GENERIC_INVALID_PARAMETERS | LOCERR_GENERIC_EMPTY_PARAMETERS | LOCERR_GENERIC_INTERNAL_ERROR | LOCERR_GENERIC_CORRUPT_DATA | LOCERR_GENERIC_MEMORY_INCONSISTENCY | LOCERR_GENERIC_INVISIBLE_OWNER_ABORT | LOCERR_GENERIC_PROHIBIT_VALIDATE | LOCERR_GENERIC_ABORTED | LOCERR_GENERIC_CONNECTION_LOST | LOCERR_GENERIC_UNSUPPORTED_IN_PRODUCT_VERSION | LOCERR_GENERIC_REST_CONNECTION_FAILURE | LOCERR_GENERIC_MEMORY_LIMIT_REACHED | LOCERR_HTTP_400 | LOCERR_HTTP_401 | LOCERR_HTTP_402 | LOCERR_HTTP_403 | LOCERR_HTTP_404 | LOCERR_HTTP_405 | LOCERR_HTTP_406 | LOCERR_HTTP_407 | LOCERR_HTTP_408 | LOCERR_HTTP_409 | LOCERR_HTTP_410 | LOCERR_HTTP_411 | LOCERR_HTTP_412 | LOCERR_HTTP_413 | LOCERR_HTTP_414 | LOCERR_HTTP_415 | LOCERR_HTTP_416 | LOCERR_HTTP_417 | LOCERR_HTTP_422 | LOCERR_HTTP_429 | LOCERR_HTTP_500 | LOCERR_HTTP_501 | LOCERR_HTTP_502 | LOCERR_HTTP_503 | LOCERR_HTTP_504 | LOCERR_HTTP_505 | LOCERR_HTTP_509 | LOCERR_HTTP_COULD_NOT_RESOLVE_HOST | LOCERR_APP_ALREADY_EXISTS | LOCERR_APP_INVALID_NAME | LOCERR_APP_ALREADY_OPEN | LOCERR_APP_NOT_FOUND | LOCERR_APP_IMPORT_FAILED | LOCERR_APP_SAVE_FAILED | LOCERR_APP_CREATE_FAILED | LOCERR_APP_INVALID | LOCERR_APP_CONNECT_FAILED | LOCERR_APP_ALREADY_OPEN_IN_DIFFERENT_MODE | LOCERR_APP_MIGRATION_COULD_NOT_CONTACT_MIGRATION_SERVICE | LOCERR_APP_MIGRATION_COULD_NOT_START_MIGRATION | LOCERR_APP_MIGRATION_FAILURE | LOCERR_APP_SCRIPT_MISSING | LOCERR_APP_EXPORT_FAILED | LOCERR_CONNECTION_ALREADY_EXISTS | LOCERR_CONNECTION_NOT_FOUND | LOCERR_CONNECTION_FAILED_TO_LOAD | LOCERR_CONNECTION_FAILED_TO_IMPORT | LOCERR_CONNECTION_NAME_IS_INVALID | LOCERR_CONNECTOR_NO_FILE_STREAMING_SUPPORT | LOCERR_CONNECTOR_FILESIZE_EXCEEDED_BUFFER_SIZE | LOCERR_FILE_ACCESS_DENIED | LOCERR_FILE_NAME_INVALID | LOCERR_FILE_CORRUPT | LOCERR_FILE_NOT_FOUND | LOCERR_FILE_FORMAT_UNSUPPORTED | LOCERR_FILE_OPENED_IN_UNSUPPORTED_MODE | LOCERR_FILE_TABLE_NOT_FOUND | LOCERR_USER_ACCESS_DENIED | LOCERR_USER_IMPERSONATION_FAILED | LOCERR_SERVER_OUT_OF_SESSION_AND_USER_CALS | LOCERR_SERVER_OUT_OF_SESSION_CALS | LOCERR_SERVER_OUT_OF_USAGE_CALS | LOCERR_SERVER_OUT_OF_CALS | LOCERR_SERVER_OUT_OF_NAMED_CALS | LOCERR_SERVER_OFF_DUTY | LOCERR_SERVER_BUSY | LOCERR_SERVER_LICENSE_EXPIRED | LOCERR_SERVER_AJAX_DISABLED | LOCERR_HC_INVALID_OBJECT | LOCERR_HC_RESULT_TOO_LARGE | LOCERR_HC_INVALID_OBJECT_STATE | LOCERR_HC_MODAL_OBJECT_ERROR | LOCERR_CALC_INVALID_DEF | LOCERR_CALC_NOT_IN_LIB | LOCERR_CALC_HEAP_ERROR | LOCERR_CALC_TOO_LARGE | LOCERR_CALC_TIMEOUT | LOCERR_CALC_EVAL_CONDITION_FAILED | LOCERR_CALC_MIXED_LINKED_AGGREGATION | LOCERR_CALC_MISSING_LINKED | LOCERR_CALC_INVALID_COL_SORT | LOCERR_CALC_PAGES_TOO_LARGE | LOCERR_CALC_SEMANTIC_FIELD_NOT_ALLOWED | LOCERR_CALC_VALIDATION_STATE_INVALID | LOCERR_CALC_PIVOT_DIMENSIONS_ALREADY_EXISTS | LOCERR_CALC_MISSING_LINKED_FIELD | LOCERR_CALC_NOT_CALCULATED | LOCERR_LAYOUT_EXTENDS_INVALID_ID | LOCERR_LAYOUT_LINKED_OBJECT_NOT_FOUND | LOCERR_LAYOUT_LINKED_OBJECT_INVALID | LOCERR_PERSISTENCE_WRITE_FAILED | LOCERR_PERSISTENCE_READ_FAILED | LOCERR_PERSISTENCE_DELETE_FAILED | LOCERR_PERSISTENCE_NOT_FOUND | LOCERR_PERSISTENCE_UNSUPPORTED_VERSION | LOCERR_PERSISTENCE_MIGRATION_FAILED_READ_ONLY | LOCERR_PERSISTENCE_MIGRATION_CANCELLED | LOCERR_PERSISTENCE_MIGRATION_BACKUP_FAILED | LOCERR_PERSISTENCE_DISK_FULL | LOCERR_PERSISTENCE_NOT_SUPPORTED_FOR_SESSION_APP | LOCERR_PERSISTENCE_SYNC_SET_CHUNK_INVALID_PARAMETERS | LOCERR_PERSISTENCE_SYNC_GET_CHUNK_INVALID_PARAMETERS | LOCERR_SCRIPT_DATASOURCE_ACCESS_DENIED | LOCERR_RELOAD_IN_PROGRESS | LOCERR_RELOAD_TABLE_X_NOT_FOUND | LOCERR_RELOAD_UNKNOWN_STATEMENT | LOCERR_RELOAD_EXPECTED_SOMETHING_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_NOTHING_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_1_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_2_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_3_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_4_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_5_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_6_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_7_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_EXPECTED_ONE_OF_8_OR_MORE_TOKENS_FOUND_UNKNOWN | LOCERR_RELOAD_FIELD_X_NOT_FOUND | LOCERR_RELOAD_MAPPING_TABLE_X_NOT_FOUND | LOCERR_RELOAD_LIB_CONNECTION_X_NOT_FOUND | LOCERR_RELOAD_NAME_ALREADY_TAKEN | LOCERR_RELOAD_WRONG_FILE_FORMAT_DIF | LOCERR_RELOAD_WRONG_FILE_FORMAT_BIFF | LOCERR_RELOAD_WRONG_FILE_FORMAT_ENCRYPTED | LOCERR_RELOAD_OPEN_FILE_ERROR | LOCERR_RELOAD_AUTO_GENERATE_COUNT | LOCERR_RELOAD_PE_ILLEGAL_PREFIX_COMB | LOCERR_RELOAD_MATCHING_CONTROL_STATEMENT_ERROR | LOCERR_RELOAD_MATCHING_LIBPATH_X_NOT_FOUND | LOCERR_RELOAD_MATCHING_LIBPATH_X_INVALID | LOCERR_RELOAD_MATCHING_LIBPATH_X_OUTSIDE | LOCERR_RELOAD_NO_QUALIFIED_PATH_FOR_FILE | LOCERR_RELOAD_MODE_STATEMENT_ONLY_FOR_LIB_PATHS | LOCERR_RELOAD_INCONSISTENT_USE_OF_SEMANTIC_FIELDS | LOCERR_RELOAD_NO_OPEN_DATABASE | LOCERR_RELOAD_AGGREGATION_REQUIRED_BY_GROUP_BY | LOCERR_RELOAD_CONNECT_MUST_USE_LIB_PREFIX_IN_THIS_MODE | LOCERR_RELOAD_ODBC_CONNECT_FAILED | LOCERR_RELOAD_OLEDB_CONNECT_FAILED | LOCERR_RELOAD_CUSTOM_CONNECT_FAILED | LOCERR_RELOAD_ODBC_READ_FAILED | LOCERR_RELOAD_OLEDB_READ_FAILED | LOCERR_RELOAD_CUSTOM_READ_FAILED | LOCERR_RELOAD_BINARY_LOAD_PROHIBITED | LOCERR_RELOAD_CONNECTOR_START_FAILED | LOCERR_RELOAD_CONNECTOR_NOT_RESPONDING | LOCERR_RELOAD_CONNECTOR_REPLY_ERROR | LOCERR_RELOAD_CONNECTOR_CONNECT_ERROR | LOCERR_RELOAD_CONNECTOR_NOT_FOUND_ERROR | LOCERR_RELOAD_INPUT_FIELD_WITH_DUPLICATE_KEYS | LOCERR_RELOAD_CONCATENATE_LOAD_NO_PREVIOUS_TABLE | LOCERR_PERSONAL_NEW_VERSION_AVAILABLE | LOCERR_PERSONAL_VERSION_EXPIRED | LOCERR_PERSONAL_SECTION_ACCESS_DETECTED | LOCERR_PERSONAL_APP_DELETION_FAILED | LOCERR_USER_AUTHENTICATION_FAILURE | LOCERR_EXPORT_OUT_OF_MEMORY | LOCERR_EXPORT_NO_DATA | LOCERR_SYNC_INVALID_OFFSET | LOCERR_SEARCH_TIMEOUT | LOCERR_DIRECT_DISCOVERY_LINKED_EXPRESSION_FAIL | LOCERR_DIRECT_DISCOVERY_ROWCOUNT_OVERFLOW | LOCERR_DIRECT_DISCOVERY_EMPTY_RESULT | LOCERR_DIRECT_DISCOVERY_DB_CONNECTION_FAILED | LOCERR_DIRECT_DISCOVERY_MEASURE_NOT_ALLOWED | LOCERR_DIRECT_DISCOVERY_DETAIL_NOT_ALLOWED | LOCERR_DIRECT_DISCOVERY_NOT_SYNTH_CIRCULAR_ALLOWED | LOCERR_DIRECT_DISCOVERY_ONLY_ONE_DD_TABLE_ALLOWED | LOCERR_DIRECT_DISCOVERY_DB_AUTHORIZATION_FAILED | LOCERR_SMART_LOAD_TABLE_NOT_FOUND | LOCERR_SMART_LOAD_TABLE_DUPLICATED | LOCERR_VARIABLE_NO_NAME | LOCERR_VARIABLE_DUPLICATE_NAME | LOCERR_VARIABLE_INCONSISTENCY | LOCERR_MEDIA_LIBRARY_LIST_FAILED | LOCERR_MEDIA_LIBRARY_CONTENT_FAILED | LOCERR_MEDIA_BUNDLING_FAILED | LOCERR_MEDIA_UNBUNDLING_FAILED | LOCERR_MEDIA_LIBRARY_NOT_FOUND | LOCERR_FEATURE_DISABLED | LOCERR_JSON_RPC_INVALID_REQUEST | LOCERR_JSON_RPC_METHOD_NOT_FOUND | LOCERR_JSON_RPC_INVALID_PARAMETERS | LOCERR_JSON_RPC_INTERNAL_ERROR | LOCERR_JSON_RPC_PARSE_ERROR | LOCERR_MQ_SOCKET_CONNECT_FAILURE | LOCERR_MQ_SOCKET_OPEN_FAILURE | LOCERR_MQ_PROTOCOL_NO_RESPONE | LOCERR_MQ_PROTOCOL_LIBRARY_EXCEPTION | LOCERR_MQ_PROTOCOL_CONNECTION_CLOSED | LOCERR_MQ_PROTOCOL_CHANNEL_CLOSED | LOCERR_MQ_PROTOCOL_UNKNOWN_ERROR | LOCERR_MQ_PROTOCOL_INVALID_STATUS | LOCERR_EXTENGINE_GRPC_STATUS_OK | LOCERR_EXTENGINE_GRPC_STATUS_CANCELLED | LOCERR_EXTENGINE_GRPC_STATUS_UNKNOWN | LOCERR_EXTENGINE_GRPC_STATUS_INVALID_ARGUMENT | LOCERR_EXTENGINE_GRPC_STATUS_DEADLINE_EXCEEDED | LOCERR_EXTENGINE_GRPC_STATUS_NOT_FOUND | LOCERR_EXTENGINE_GRPC_STATUS_ALREADY_EXISTS | LOCERR_EXTENGINE_GRPC_STATUS_PERMISSION_DENIED | LOCERR_EXTENGINE_GRPC_STATUS_RESOURCE_EXHAUSTED | LOCERR_EXTENGINE_GRPC_STATUS_FAILED_PRECONDITION | LOCERR_EXTENGINE_GRPC_STATUS_ABORTED | LOCERR_EXTENGINE_GRPC_STATUS_OUT_OF_RANGE | LOCERR_EXTENGINE_GRPC_STATUS_UNIMPLEMENTED | LOCERR_EXTENGINE_GRPC_STATUS_INTERNAL | LOCERR_EXTENGINE_GRPC_STATUS_UNAVAILABLE | LOCERR_EXTENGINE_GRPC_STATUS_DATA_LOSS | LOCERR_EXTENGINE_GRPC_STATUS_UNAUTHENTICATED | LOCERR_LXW_INVALID_OBJ | LOCERR_LXW_INVALID_FILE | LOCERR_LXW_INVALID_SHEET | LOCERR_LXW_INVALID_EXPORT_RANGE | LOCERR_LXW_ERROR | LOCERR_LXW_ERROR_MEMORY_MALLOC_FAILED | LOCERR_LXW_ERROR_CREATING_XLSX_FILE | LOCERR_LXW_ERROR_CREATING_TMPFILE | LOCERR_LXW_ERROR_ZIP_FILE_OPERATION | LOCERR_LXW_ERROR_ZIP_FILE_ADD | LOCERR_LXW_ERROR_ZIP_CLOSE | LOCERR_LXW_ERROR_NULL_PARAMETER_IGNORED | LOCERR_LXW_ERROR_MAX_STRING_LENGTH_EXCEEDED | LOCERR_LXW_ERROR_255_STRING_LENGTH_EXCEEDED | LOCERR_LXW_ERROR_SHARED_STRING_INDEX_NOT_FOUND | LOCERR_LXW_ERROR_WORKSHEET_INDEX_OUT_OF_RANGE | LOCERR_LXW_ERROR_WORKSHEET_MAX_NUMBER_URLS_EXCEEDED | LOCERR_CURL_UNSUPPORTED_PROTOCOL | LOCERR_CURL_COULDNT_RESOLVE_PROXY | LOCERR_CURL_COULDNT_CONNECT | LOCERR_CURL_REMOTE_ACCESS_DENIED | LOCERR_CURL_FTP_ACCEPT_FAILED | LOCERR_CURL_FTP_ACCEPT_TIMEOUT | LOCERR_CURL_FTP_CANT_GET_HOST | LOCERR_CURL_PARTIAL_FILE | LOCERR_CURL_QUOTE_ERROR | LOCERR_CURL_WRITE_ERROR | LOCERR_CURL_UPLOAD_FAILED | LOCERR_CURL_OUT_OF_MEMORY | LOCERR_CURL_OPERATION_TIMEDOUT | LOCERR_CURL_FTP_COULDNT_USE_REST | LOCERR_CURL_HTTP_POST_ERROR | LOCERR_CURL_SSL_CONNECT_ERROR | LOCERR_CURL_FILE_COULDNT_READ_FILE | LOCERR_CURL_LDAP_CANNOT_BIND | LOCERR_CURL_LDAP_SEARCH_FAILED | LOCERR_CURL_TOO_MANY_REDIRECTS | LOCERR_CURL_PEER_FAILED_VERIFICATION | LOCERR_CURL_GOT_NOTHING | LOCERR_CURL_SSL_ENGINE_NOTFOUND | LOCERR_CURL_SSL_ENGINE_SETFAILED | LOCERR_CURL_SSL_CERTPROBLEM | LOCERR_CURL_SSL_CIPHER | LOCERR_CURL_SSL_CACERT | LOCERR_CURL_BAD_CONTENT_ENCODING | LOCERR_CURL_LDAP_INVALID_URL | LOCERR_CURL_USE_SSL_FAILED | LOCERR_CURL_SSL_ENGINE_INITFAILED | LOCERR_CURL_LOGIN_DENIED | LOCERR_CURL_TFTP_NOTFOUND | LOCERR_CURL_TFTP_ILLEGAL | LOCERR_CURL_SSH | LOCERR_SETEXPRESSION_TOO_LARGE deriving (Show, Read, Eq, Ord, Enum)
 data NxLocalizedWarningCode = LOCWARN_PERSONAL_RELOAD_REQUIRED | LOCWARN_PERSONAL_VERSION_EXPIRES_SOON | LOCWARN_EXPORT_DATA_TRUNCATED | LOCWARN_COULD_NOT_OPEN_ALL_OBJECTS deriving (Show, Read, Eq, Ord, Enum)
 data NxGrpType = GRP_NX_NONE | GRP_NX_HIEARCHY | GRP_NX_COLLECTION deriving (Show, Read, Eq, Ord, Enum)
 data NxExportFileType = EXPORT_CSV_C | EXPORT_CSV_T | EXPORT_OOXML deriving (Show, Read, Eq, Ord, Enum)
 data NxExportState = EXPORT_POSSIBLE | EXPORT_ALL deriving (Show, Read, Eq, Ord, Enum)
-data NxDimCellType = NX_DIM_CELL_VALUE | NX_DIM_CELL_EMPTY | NX_DIM_CELL_NORMAL | NX_DIM_CELL_TOTAL | NX_DIM_CELL_OTHER | NX_DIM_CELL_AGGR | NX_DIM_CELL_PSEUDO | NX_DIM_CELL_ROOT | NX_DIM_CELL_NULL deriving (Show, Read, Eq, Ord, Enum)
+data NxDimCellType = NX_DIM_CELL_VALUE | NX_DIM_CELL_EMPTY | NX_DIM_CELL_NORMAL | NX_DIM_CELL_TOTAL | NX_DIM_CELL_OTHER | NX_DIM_CELL_AGGR | NX_DIM_CELL_PSEUDO | NX_DIM_CELL_ROOT | NX_DIM_CELL_NULL | NX_DIM_CELL_GENERATED deriving (Show, Read, Eq, Ord, Enum)
 data NxStackElemType = NX_STACK_CELL_NORMAL | NX_STACK_CELL_TOTAL | NX_STACK_CELL_OTHER | NX_STACK_CELL_SUM | NX_STACK_CELL_VALUE | NX_STACK_CELL_PSEUDO deriving (Show, Read, Eq, Ord, Enum)
 data NxSortIndicatorType = NX_SORT_INDICATE_NONE | NX_SORT_INDICATE_ASC | NX_SORT_INDICATE_DESC deriving (Show, Read, Eq, Ord, Enum)
 data NxDimensionType = NX_DIMENSION_TYPE_DISCRETE | NX_DIMENSION_TYPE_NUMERIC | NX_DIMENSION_TYPE_TIME deriving (Show, Read, Eq, Ord, Enum)
 data NxFieldSelectionMode = SELECTION_MODE_NORMAL | SELECTION_MODE_AND | SELECTION_MODE_NOT deriving (Show, Read, Eq, Ord, Enum)
 data NxFrequencyMode = NX_FREQUENCY_NONE | NX_FREQUENCY_VALUE | NX_FREQUENCY_PERCENT | NX_FREQUENCY_RELATIVE deriving (Show, Read, Eq, Ord, Enum)
 data NxDataReductionMode = DATA_REDUCTION_NONE | DATA_REDUCTION_ONEDIM | DATA_REDUCTION_SCATTERED | DATA_REDUCTION_CLUSTERED | DATA_REDUCTION_STACKED deriving (Show, Read, Eq, Ord, Enum)
-data NxHypercubeMode = DATA_MODE_STRAIGHT | DATA_MODE_PIVOT | DATA_MODE_PIVOT_STACK deriving (Show, Read, Eq, Ord, Enum)
+data NxHypercubeMode = DATA_MODE_STRAIGHT | DATA_MODE_PIVOT | DATA_MODE_PIVOT_STACK | DATA_MODE_TREE deriving (Show, Read, Eq, Ord, Enum)
 data NxPatchOperationType = Add | Remove | Replace deriving (Show, Read, Eq, Ord, Enum)
 data NxSelectionCellType = NX_CELL_DATA | NX_CELL_TOP | NX_CELL_LEFT deriving (Show, Read, Eq, Ord, Enum)
+data CharEncodingType = CHAR_ENCODING_UTF8 | CHAR_ENCODING_UTF16 deriving (Show, Read, Eq, Ord, Enum)
 data NxMatchingFieldMode = MATCHINGFIELDMODE_MATCH_ALL | MATCHINGFIELDMODE_MATCH_ONE deriving (Show, Read, Eq, Ord, Enum)
 instance ValueType FieldType where
   toValue lit = ValueString (show lit)
@@ -4279,6 +4678,12 @@ instance ValueType NxSelectionCellType where
   fromValue v = case v of
     ValueString txt -> read txt
     _ -> error "fromValue NxSelectionCellType"
+
+instance ValueType CharEncodingType where
+  toValue lit = ValueString (show lit)
+  fromValue v = case v of
+    ValueString txt -> read txt
+    _ -> error "fromValue CharEncodingType"
 
 instance ValueType NxMatchingFieldMode where
   toValue lit = ValueString (show lit)
