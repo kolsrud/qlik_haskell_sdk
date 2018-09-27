@@ -2,21 +2,30 @@
 module AbstractStructure where
 
 import Text.JSON
+import Text.JSON.Types (get_field)
 import Data.Ratio
 import Control.Lens
 
-data Value = ValueInt    Int
+newtype AbstractStructure = AbstractStructure (JSObject JSValue)
+
+data Value = ValueVoid
+           | ValueInt    Int
            | ValueChar   Char
            | ValueBool   Bool
            | ValueString String
            | ValueObject AbstractStructure
+           | ValueQix    QixObject
            | ValueArray  [Value]
+
+type Handle = Int
+data QixObject = QixObject Handle String deriving Show
 
 instance Show Value where
   show v = case v of
-    ValueInt n -> show n
-    ValueChar c -> [c]
-    ValueBool b -> show b
+    ValueVoid     -> "()"
+    ValueInt    n -> show n
+    ValueChar   c -> [c]
+    ValueBool   b -> show b
     ValueString s -> s
     ValueObject (AbstractStructure json) -> show json
     ValueArray values -> show values
@@ -51,6 +60,13 @@ class ValueType a where
   defaultValue :: a
   defaultValue = undefined
 
+instance ValueType () where
+  toValue _ = ValueVoid
+  fromValue v = case v of
+    ValueVoid -> ()
+    _ -> error "fromValue Void"
+  defaultValue = ()
+
 instance ValueType Bool where
   toValue b = ValueBool b
   fromValue v = case v of
@@ -65,12 +81,46 @@ instance ValueType Int where
     _ -> error "fromValue Int"
   defaultValue = 0
 
+instance ValueType Double where
+  toValue n = error "toValue Double"
+  fromValue v = case v of
+--    ValueInt n -> n
+    _ -> error "fromValue Double"
+  defaultValue = 0
+
 instance ValueType Char where
   toValue c = ValueChar c
   fromValue v = case v of
     ValueChar c -> c
     _ -> error "fromValue Char"
   joinArray values = ValueString values
+
+instance ValueType QixObject where
+  toValue obj = ValueQix obj
+  fromValue v = case v of
+    ValueQix    qixObj -> qixObj
+    ValueObject as -> case readJSON (showJSON as) of
+      Error e -> error $ "Unable to parse QixObject. " ++ e ++ ": " ++ show as
+      Ok o    -> o
+    _ -> error ("fromValue QixObject " ++ show v)
+  defaultValue = QixObject undefined undefined
+         
+instance JSON QixObject where
+  showJSON _ = error "QixObject showJSON is undefined."
+  readJSON v = case v of
+    JSObject obj ->
+      let h = getProp obj "qHandle"
+          t = getProp obj "qType"
+       in Ok (QixObject h t)
+    _ -> error $ "Type error parsing QixObject (" ++ show v ++ ")"
+
+getProp :: JSON a => JSObject JSValue -> String -> a
+getProp obj prop =
+  let m_p = get_field obj prop
+   in case fmap readJSON m_p of
+        Just (Error e) -> error ("getProp: " ++ e ++ "(" ++ show m_p ++")")
+        Just (Ok n) -> n
+        Nothing -> error $ "Could not find property " ++ prop ++ " in json " ++ (show (AbstractStructure obj))
 
 instance ValueType AbstractStructure where
   toValue abs = ValueObject abs
@@ -93,7 +143,6 @@ instance ValueType a => ValueType [a] where
     _ -> error ("fromValue Array: " ++ show v)
   defaultValue = []
 
-newtype AbstractStructure = AbstractStructure (JSObject JSValue)
 type JSONPath = String
 
 instance Show AbstractStructure where

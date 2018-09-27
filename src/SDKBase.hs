@@ -17,6 +17,7 @@ import Text.JSON
 import Text.JSON.Types
 import Control.Concurrent.MVar
 import Control.Monad.State.Lazy
+import Control.Lens ((^.))
 import Data.Maybe
 import Data.Map (Map)
 import qualified Data.Map as Map
@@ -27,7 +28,7 @@ import AbstractStructure
 import Debug.Trace
 
 debugConsole = False
--- debugConsole = True
+--debugConsole = True
 
 rpcRequest :: Handle -> RequestId -> String -> ParameterList -> String
 rpcRequest handle requestId method params =
@@ -36,27 +37,18 @@ rpcRequest handle requestId method params =
   "\",\"handle\": " ++ show handle ++
   ",\"params\":[" ++ intercalate "," (map (encode.showJSON.snd) params) ++ "]}"
 
-newtype App = App QixObject
+class QixClass a where
+  getHandle :: a -> Handle
+ 
+-- newtype App = App QixObject
 
-instance JSON App where
-  readJSON v = case (readJSON v)::(Result QixObject) of
-    Error e -> Error $ "Unable to parse as App. " ++ e ++ ": " ++ show v
-    Ok q -> Ok (App q)
-  showJSON (App q) = showJSON q
-
-instance JSON QixObject where
-  showJSON _ = error "QixObject showJSON is undefined."
-  readJSON v = case v of
-    JSObject obj ->
-      let h = getProp obj "qHandle"
-          t = getProp obj "qType"
-       in Ok (QixObject h t)
-    _ -> error $ "Type error parsing QixObject (" ++ show v ++ ")"
-
-data QixObject = QixObject Handle String deriving Show
+-- instance JSON App where
+--   readJSON v = case (readJSON v)::(Result QixObject) of
+--     Error e -> Error $ "Unable to parse as App. " ++ e ++ ": " ++ show v
+--     Ok q -> Ok (App q)
+--   showJSON (App q) = showJSON q
 
 type ResponseProcessor a = ResponseMessage -> a
-type Handle = Int
 type URL = String
 type Port = Int
 data Task a = Task {
@@ -64,6 +56,27 @@ data Task a = Task {
   taskMVar :: MVar a
 }
 type ParameterList = [(String, Value)]
+
+onVoidResponse :: String -> String -> ResponseProcessor ()
+onVoidResponse methodId propId (ResponseMessage _ _ result) = case readJSON result of
+  Error e -> error $ "Cannot read return value for " ++ methodId ++ ": " ++ (show result)
+  Ok (ValueObject a) -> ()
+
+onSingleValueResponse :: ValueType a => String -> String -> ResponseProcessor a
+onSingleValueResponse methodId propId (ResponseMessage _ _ result) = case readJSON result of
+  Error e -> error $ "Cannot read return value for " ++ methodId ++ ": " ++ (show result)
+  Ok (ValueObject a) -> a ^. asPropValueLens propId
+
+onMultiValueResponse :: ValueType a => String -> ResponseProcessor a
+onMultiValueResponse methodId (ResponseMessage _ m_return result) = case readJSON result of
+  Error e -> error $ "Cannot read return value for " ++ methodId ++ ": " ++ (show result)
+  Ok a -> fromValue a
+
+onReturnValueResponse :: ValueType a => String -> ResponseProcessor a
+onReturnValueResponse methodId (ResponseMessage _ m_return _) = case fmap readJSON m_return of
+  Nothing -> error $ "No return value for " ++ methodId ++ "."
+  Just (Error e) -> error $ "Cannot read return value for " ++ methodId ++ "."
+  Just (Ok a) ->  fromValue a
 
 parseResponseMessage :: Text -> ResponseMessage
 parseResponseMessage msg =
@@ -82,14 +95,6 @@ parseResponseMessage msg =
                in --trace (show (AbstractStructure obj)) $
                   ResponseMessage id ret (JSObject result)
     Ok x -> error $ "parseResponseMessage: " ++ (show x)
-
-getProp :: JSON a => JSObject JSValue -> String -> a
-getProp obj prop =
-  let m_p = get_field obj prop
-   in case fmap readJSON m_p of
-        Just (Error e) -> error ("getProp: " ++ e ++ "(" ++ show m_p ++")")
-        Just (Ok n) -> n
-        Nothing -> error $ "Could not find property " ++ prop ++ " in json " ++ (show (AbstractStructure obj))
 
 getPropMaybe :: JSON a => JSObject JSValue -> String -> Maybe a
 getPropMaybe obj prop = case get_field obj prop of

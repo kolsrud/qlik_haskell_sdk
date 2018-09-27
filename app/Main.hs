@@ -1,18 +1,22 @@
 module Main where
 
-import HSDK
 import SDKBase -- (withConnection, asSet, emptyAs)
 import SDKMonad (SDKM)
 import Control.Monad.Trans (liftIO)
 import Text.JSON (encode)
 import Data.Maybe
 import AbstractStructure
-import GenericObject
---import GenericObjectLayout
+import PropClasses
 import ModelEngine
+import Global       
+import Doc
+import GenericObject
 import Control.Lens
 import Control.Concurrent
 import System.IO
+       
+global :: Global
+global = Global (QixObject (-1) undefined)
        
 main :: IO ()
 main = do 
@@ -21,12 +25,12 @@ main = do
   
 myProg :: SDKM ()
 myProg = do
-  app <- openApp "Sales Discovery"
+  app <- openApp global "Sales Discovery" undefined undefined undefined undefined
   v   <- evaluate app "Sum([Sales Amount])"
   liftIO $ putStrLn v
 
 myProg2 = do
-  app        <- openApp "Sales Discovery"
+  app        <- openApp global "Sales Discovery" undefined undefined undefined undefined
   sheetList  <- createSessionObject app sheetListProps
   listLayout <- getLayout sheetList
   if (null (listLayout ^. qExtendsId))
@@ -52,7 +56,7 @@ myProg2 = do
   return ()
 
 
-getAllChildren :: App -> GenericObject -> SDKM [GenericObject]
+getAllChildren :: Doc -> GenericObject -> SDKM [GenericObject]
 getAllChildren app objs = do
   allInfos <- getChildInfos objs
   let allIds = map (^. qId) allInfos
