@@ -27,9 +27,6 @@ import SDKMonad
 import AbstractStructure
 import Debug.Trace
 
-debugConsole = False
---debugConsole = True
-
 rpcRequest :: Handle -> RequestId -> String -> ParameterList -> String
 rpcRequest handle requestId method params =
   "{\"jsonrpc\":\"2.0\",\"id\":" ++ show requestId ++
@@ -115,13 +112,13 @@ sendRequestM handle method params onResponse = do
 sendMessage :: String -> SDKM ()
 sendMessage msg = do
   conn <- readState connection
-  when (debugConsole) (liftIO $ putStrLn ("Sending message:   " ++ msg))
+  printToDebugConsole ("Sending message:   " ++ msg)
   liftIO $ WS.sendTextData conn (T.pack msg)
 
 responseListner :: WS.Connection -> MVar SDKState -> IO ()
 responseListner conn mvar = forever $ do
   txt <- WS.receiveData conn
-  when (debugConsole) (putStrLn ("Receiving message: " ++ T.unpack txt))
+  printToDebugConsoleIO mvar ("Receiving message: " ++ T.unpack txt)
   setResult mvar (parseResponseMessage txt)
 
 makeResponseTask :: RequestId -> ResponseProcessor a -> SDKM (Task a)
