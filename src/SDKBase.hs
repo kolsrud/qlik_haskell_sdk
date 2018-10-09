@@ -55,22 +55,26 @@ data Task a = Task {
 type ParameterList = [(String, Value)]
 
 onVoidResponse :: String -> String -> ResponseProcessor ()
-onVoidResponse methodId propId (ResponseMessage _ _ result) = case readJSON result of
-  Error e -> error $ "Cannot read return value for " ++ methodId ++ ": " ++ (show result)
-  Ok (ValueObject a) -> ()
+onVoidResponse methodId propId (ResponseMessage _ _ m_result _) = case fmap readJSON m_result of
+  Nothing -> error $ "No result value exists for response to " ++ methodId
+  Just (Error e) -> error $ "Cannot read return value for " ++ methodId ++ ": " ++ (show m_result)
+  Just (Ok (ValueObject a)) -> ()
 
 onSingleValueResponse :: ValueType a => String -> String -> ResponseProcessor a
-onSingleValueResponse methodId propId (ResponseMessage _ _ result) = case readJSON result of
-  Error e -> error $ "Cannot read return value for " ++ methodId ++ ": " ++ (show result)
-  Ok (ValueObject a) -> a ^. asPropValueLens propId
+onSingleValueResponse methodId propId (ResponseMessage _ _ _ (Just errorMsg)) = error $ "Error received on call to " ++ methodId ++ ": " ++ show errorMsg
+onSingleValueResponse methodId propId (ResponseMessage _ _ m_result _) = case fmap readJSON m_result of
+  Nothing -> error $ "No result value exists for response to " ++ methodId
+  Just (Error e) -> error $ "Cannot read return value for " ++ methodId ++ ": " ++ (show m_result)
+  Just (Ok (ValueObject a)) -> a ^. asPropValueLens propId
 
 onMultiValueResponse :: ValueType a => String -> ResponseProcessor a
-onMultiValueResponse methodId (ResponseMessage _ m_return result) = case readJSON result of
-  Error e -> error $ "Cannot read return value for " ++ methodId ++ ": " ++ (show result)
-  Ok a -> fromValue a
+onMultiValueResponse methodId (ResponseMessage _ m_return m_result _) = case fmap readJSON m_result of
+  Nothing -> error $ "No result value exists for response to " ++ methodId
+  Just (Error e) -> error $ "Cannot read return value for " ++ methodId ++ ": " ++ (show m_result)
+  Just (Ok a)    -> fromValue a
 
 onReturnValueResponse :: ValueType a => String -> ResponseProcessor a
-onReturnValueResponse methodId (ResponseMessage _ m_return _) = case fmap readJSON m_return of
+onReturnValueResponse methodId (ResponseMessage _ m_return _ _) = case fmap readJSON m_return of
   Nothing -> error $ "No return value for " ++ methodId ++ "."
   Just (Error e) -> error $ "Cannot read return value for " ++ methodId ++ "."
   Just (Ok a) ->  fromValue a
@@ -87,10 +91,11 @@ parseResponseMessage msg =
                in --trace (show (AbstractStructure obj)) $
                   PushMessage method
             Just id ->
-              let result = getProp obj "result"
-                  ret    = getPropMaybe result "qReturn"
+              let m_result = getPropMaybe obj "result"
+                  m_error  = getPropMaybe obj "error"
+                  m_ret    = m_result >>= (`getPropMaybe` "qReturn")
                in --trace (show (AbstractStructure obj)) $
-                  ResponseMessage id ret (JSObject result)
+                  ResponseMessage id m_ret (fmap JSObject m_result) (fmap JSObject m_error)
     Ok x -> error $ "parseResponseMessage: " ++ (show x)
 
 getPropMaybe :: JSON a => JSObject JSValue -> String -> Maybe a
@@ -115,16 +120,18 @@ sendMessage msg = do
   printToDebugConsole ("Sending message:   " ++ msg)
   liftIO $ WS.sendTextData conn (T.pack msg)
 
-responseListner :: WS.Connection -> MVar SDKState -> IO ()
-responseListner conn mvar = forever $ do
-  txt <- WS.receiveData conn
-  printToDebugConsoleIO mvar ("Receiving message: " ++ T.unpack txt)
-  setResult mvar (parseResponseMessage txt)
+responseListner :: SDKM ()
+responseListner = do
+  conn <- readState connection
+  forever $ do
+    txt <- liftIO $ WS.receiveData conn
+    printToDebugConsole ("Receiving message: " ++ T.unpack txt)
+    setResult (parseResponseMessage txt)
 
 makeResponseTask :: RequestId -> ResponseProcessor a -> SDKM (Task a)
 makeResponseTask id onResponse = do
   mvar <- liftIO $ newEmptyMVar
-  addRequestListner id (\response -> putMVar mvar (onResponse response))
+  addRequestListner id (\response -> liftIO $ putMVar mvar (onResponse response))
   return (Task { taskMVar = mvar })
 
 withConnection :: URL -> Port -> SDKM () -> IO ()
@@ -138,19 +145,12 @@ withConnection url port m = do
              WS.ConnectionClosed -> return ()
              _ -> putStrLn $ "Caught error: " ++ show e)
  
-setupSDK :: WS.Connection -> SDKM a -> SDKM a
-setupSDK conn m = do
-  mvar <- get
-  threadId <- liftIO $ forkIO (responseListner conn mvar)
-  x <- m
---  liftIO $ killThread threadId
-  return x
-
 runSDK :: SDKM () -> WS.ClientApp ()
 runSDK m conn = do
   liftIO (putStrLn "runSDK")
   stateVar <- liftIO $ newMVar (initialState conn)
-  evalStateT (setupSDK conn m) stateVar
+  forkIO $ evalStateT responseListner stateVar
+  evalStateT m stateVar
   WS.sendClose conn (T.pack "Bye!")
 
 awaitResult :: Task a -> SDKM a
