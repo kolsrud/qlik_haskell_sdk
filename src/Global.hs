@@ -15,8 +15,11 @@ import ModelEngine
 instance QixClass Global where
   getHandle (Global (QixObject h _)) = h
 
-createDocEx :: Global -> String -> String -> String -> String -> String -> SDKM CreateDocExResult
-createDocEx obj docName userName password serial localizedScriptMainSection = createDocExAsync obj docName userName password serial localizedScriptMainSection >>= awaitResult
+createDocEx :: Global -> String -> SDKM CreateDocExResult
+createDocEx obj docName = createDocExAsync obj docName >>= awaitResult
+
+createDocEx_ :: Global -> String -> String -> String -> String -> String -> SDKM CreateDocExResult
+createDocEx_ obj docName userName password serial localizedScriptMainSection = createDocExAsync_ obj docName userName password serial localizedScriptMainSection >>= awaitResult
 
 newtype CreateDocExResult = CreateDocExResult AbstractStructure
 instance Show CreateDocExResult where show = show.toAs
@@ -30,10 +33,16 @@ instance AbstractStructureContainer CreateDocExResult where
 instance HasQReturn CreateDocExResult Doc
 instance HasQDocId CreateDocExResult String
 
-createDocExAsync :: Global -> String -> String -> String -> String -> String -> SDKM (Task CreateDocExResult)
-createDocExAsync obj docName userName password serial localizedScriptMainSection =
-  let args = [ ("qDocName", toValue docName), ("qUserName", toValue userName), ("qPassword", toValue password), ("qSerial", toValue serial), ("qLocalizedScriptMainSection", toValue localizedScriptMainSection) ]
+createDocExAsync :: Global -> String -> SDKM (Task CreateDocExResult)
+createDocExAsync obj docName =
+  let args = [("qDocName", toValue docName)]
    in sendRequestM (getHandle obj) "CreateDocEx" args (onMultiValueResponse "CreateDocEx")
+
+createDocExAsync_ :: Global -> String -> String -> String -> String -> String -> SDKM (Task CreateDocExResult)
+createDocExAsync_ obj docName userName password serial localizedScriptMainSection =
+  let args = [("qDocName", toValue docName), ("qUserName", toValue userName), ("qPassword", toValue password), ("qSerial", toValue serial), ("qLocalizedScriptMainSection", toValue localizedScriptMainSection)]
+   in sendRequestM (getHandle obj) "CreateDocEx" args (onMultiValueResponse "CreateDocEx")
+
 
 getActiveDoc :: Global -> SDKM Doc
 getActiveDoc obj = getActiveDocAsync obj >>= awaitResult
@@ -42,6 +51,7 @@ getActiveDocAsync :: Global -> SDKM (Task Doc)
 getActiveDocAsync obj =
   sendRequestM (getHandle obj) "GetActiveDoc" [] (onReturnValueResponse "GetActiveDoc")
 
+
 allowCreateApp :: Global -> SDKM Bool
 allowCreateApp obj = allowCreateAppAsync obj >>= awaitResult
 
@@ -49,8 +59,12 @@ allowCreateAppAsync :: Global -> SDKM (Task Bool)
 allowCreateAppAsync obj =
   sendRequestM (getHandle obj) "AllowCreateApp" [] (onReturnValueResponse "AllowCreateApp")
 
-createApp :: Global -> String -> String -> SDKM CreateAppResult
-createApp obj appName localizedScriptMainSection = createAppAsync obj appName localizedScriptMainSection >>= awaitResult
+
+createApp :: Global -> String -> SDKM CreateAppResult
+createApp obj appName = createAppAsync obj appName >>= awaitResult
+
+createApp_ :: Global -> String -> String -> SDKM CreateAppResult
+createApp_ obj appName localizedScriptMainSection = createAppAsync_ obj appName localizedScriptMainSection >>= awaitResult
 
 newtype CreateAppResult = CreateAppResult AbstractStructure
 instance Show CreateAppResult where show = show.toAs
@@ -64,18 +78,25 @@ instance AbstractStructureContainer CreateAppResult where
 instance HasQSuccess CreateAppResult Bool
 instance HasQAppId CreateAppResult String
 
-createAppAsync :: Global -> String -> String -> SDKM (Task CreateAppResult)
-createAppAsync obj appName localizedScriptMainSection =
-  let args = [ ("qAppName", toValue appName), ("qLocalizedScriptMainSection", toValue localizedScriptMainSection) ]
+createAppAsync :: Global -> String -> SDKM (Task CreateAppResult)
+createAppAsync obj appName =
+  let args = [("qAppName", toValue appName)]
    in sendRequestM (getHandle obj) "CreateApp" args (onMultiValueResponse "CreateApp")
+
+createAppAsync_ :: Global -> String -> String -> SDKM (Task CreateAppResult)
+createAppAsync_ obj appName localizedScriptMainSection =
+  let args = [("qAppName", toValue appName), ("qLocalizedScriptMainSection", toValue localizedScriptMainSection)]
+   in sendRequestM (getHandle obj) "CreateApp" args (onMultiValueResponse "CreateApp")
+
 
 deleteApp :: Global -> String -> SDKM Bool
 deleteApp obj appId = deleteAppAsync obj appId >>= awaitResult
 
 deleteAppAsync :: Global -> String -> SDKM (Task Bool)
 deleteAppAsync obj appId =
-  let args = [ ("qAppId", toValue appId) ]
-   in sendRequestM (getHandle obj) "DeleteApp" args (onSingleValueResponse "DeleteApp" "qSuccess")
+  let args = [("qAppId", toValue appId)]
+   in sendRequestM (getHandle obj) "DeleteApp" args (onMultiValueResponse "DeleteApp")
+
 
 isDesktopMode :: Global -> SDKM Bool
 isDesktopMode obj = isDesktopModeAsync obj >>= awaitResult
@@ -84,13 +105,15 @@ isDesktopModeAsync :: Global -> SDKM (Task Bool)
 isDesktopModeAsync obj =
   sendRequestM (getHandle obj) "IsDesktopMode" [] (onReturnValueResponse "IsDesktopMode")
 
+
 cancelRequest :: Global -> Int -> SDKM ()
 cancelRequest obj requestId = cancelRequestAsync obj requestId >>= awaitResult
 
 cancelRequestAsync :: Global -> Int -> SDKM (Task ())
 cancelRequestAsync obj requestId =
-  let args = [ ("qRequestId", toValue requestId) ]
+  let args = [("qRequestId", toValue requestId)]
    in sendRequestM (getHandle obj) "CancelRequest" args (onMultiValueResponse "CancelRequest")
+
 
 shutdownProcess :: Global -> SDKM ()
 shutdownProcess obj = shutdownProcessAsync obj >>= awaitResult
@@ -99,6 +122,7 @@ shutdownProcessAsync :: Global -> SDKM (Task ())
 shutdownProcessAsync obj =
   sendRequestM (getHandle obj) "ShutdownProcess" [] (onMultiValueResponse "ShutdownProcess")
 
+
 reloadExtensionList :: Global -> SDKM ()
 reloadExtensionList obj = reloadExtensionListAsync obj >>= awaitResult
 
@@ -106,37 +130,50 @@ reloadExtensionListAsync :: Global -> SDKM (Task ())
 reloadExtensionListAsync obj =
   sendRequestM (getHandle obj) "ReloadExtensionList" [] (onMultiValueResponse "ReloadExtensionList")
 
+
 replaceAppFromID :: Global -> String -> String -> [String] -> SDKM Bool
 replaceAppFromID obj targetAppId srcAppID ids = replaceAppFromIDAsync obj targetAppId srcAppID ids >>= awaitResult
 
 replaceAppFromIDAsync :: Global -> String -> String -> [String] -> SDKM (Task Bool)
 replaceAppFromIDAsync obj targetAppId srcAppID ids =
-  let args = [ ("qTargetAppId", toValue targetAppId), ("qSrcAppID", toValue srcAppID), ("qIds", toValue ids) ]
-   in sendRequestM (getHandle obj) "ReplaceAppFromID" args (onSingleValueResponse "ReplaceAppFromID" "qSuccess")
+  let args = [("qTargetAppId", toValue targetAppId), ("qSrcAppID", toValue srcAppID), ("qIds", toValue ids)]
+   in sendRequestM (getHandle obj) "ReplaceAppFromID" args (onMultiValueResponse "ReplaceAppFromID")
+
 
 copyApp :: Global -> String -> String -> [String] -> SDKM Bool
 copyApp obj targetAppId srcAppId ids = copyAppAsync obj targetAppId srcAppId ids >>= awaitResult
 
 copyAppAsync :: Global -> String -> String -> [String] -> SDKM (Task Bool)
 copyAppAsync obj targetAppId srcAppId ids =
-  let args = [ ("qTargetAppId", toValue targetAppId), ("qSrcAppId", toValue srcAppId), ("qIds", toValue ids) ]
-   in sendRequestM (getHandle obj) "CopyApp" args (onSingleValueResponse "CopyApp" "qSuccess")
+  let args = [("qTargetAppId", toValue targetAppId), ("qSrcAppId", toValue srcAppId), ("qIds", toValue ids)]
+   in sendRequestM (getHandle obj) "CopyApp" args (onMultiValueResponse "CopyApp")
 
-exportApp :: Global -> String -> String -> [String] -> Bool -> SDKM Bool
-exportApp obj targetPath srcAppId ids noData = exportAppAsync obj targetPath srcAppId ids noData >>= awaitResult
 
-exportAppAsync :: Global -> String -> String -> [String] -> Bool -> SDKM (Task Bool)
-exportAppAsync obj targetPath srcAppId ids noData =
-  let args = [ ("qTargetPath", toValue targetPath), ("qSrcAppId", toValue srcAppId), ("qIds", toValue ids), ("qNoData", toValue noData) ]
-   in sendRequestM (getHandle obj) "ExportApp" args (onSingleValueResponse "ExportApp" "qSuccess")
+exportApp :: Global -> String -> String -> [String] -> SDKM Bool
+exportApp obj targetPath srcAppId ids = exportAppAsync obj targetPath srcAppId ids >>= awaitResult
+
+exportApp_ :: Global -> String -> String -> [String] -> Bool -> SDKM Bool
+exportApp_ obj targetPath srcAppId ids noData = exportAppAsync_ obj targetPath srcAppId ids noData >>= awaitResult
+
+exportAppAsync :: Global -> String -> String -> [String] -> SDKM (Task Bool)
+exportAppAsync obj targetPath srcAppId ids =
+  let args = [("qTargetPath", toValue targetPath), ("qSrcAppId", toValue srcAppId), ("qIds", toValue ids)]
+   in sendRequestM (getHandle obj) "ExportApp" args (onMultiValueResponse "ExportApp")
+
+exportAppAsync_ :: Global -> String -> String -> [String] -> Bool -> SDKM (Task Bool)
+exportAppAsync_ obj targetPath srcAppId ids noData =
+  let args = [("qTargetPath", toValue targetPath), ("qSrcAppId", toValue srcAppId), ("qIds", toValue ids), ("qNoData", toValue noData)]
+   in sendRequestM (getHandle obj) "ExportApp" args (onMultiValueResponse "ExportApp")
+
 
 publishApp :: Global -> String -> String -> String -> SDKM ()
 publishApp obj appId name streamId = publishAppAsync obj appId name streamId >>= awaitResult
 
 publishAppAsync :: Global -> String -> String -> String -> SDKM (Task ())
 publishAppAsync obj appId name streamId =
-  let args = [ ("qAppId", toValue appId), ("qName", toValue name), ("qStreamId", toValue streamId) ]
+  let args = [("qAppId", toValue appId), ("qName", toValue name), ("qStreamId", toValue streamId)]
    in sendRequestM (getHandle obj) "PublishApp" args (onMultiValueResponse "PublishApp")
+
 
 isPersonalMode :: Global -> SDKM Bool
 isPersonalMode obj = isPersonalModeAsync obj >>= awaitResult
@@ -145,20 +182,31 @@ isPersonalModeAsync :: Global -> SDKM (Task Bool)
 isPersonalModeAsync obj =
   sendRequestM (getHandle obj) "IsPersonalMode" [] (onReturnValueResponse "IsPersonalMode")
 
+
 getUniqueID :: Global -> SDKM String
 getUniqueID obj = getUniqueIDAsync obj >>= awaitResult
 
 getUniqueIDAsync :: Global -> SDKM (Task String)
 getUniqueIDAsync obj =
-  sendRequestM (getHandle obj) "GetUniqueID" [] (onSingleValueResponse "GetUniqueID" "qUniqueID")
+  sendRequestM (getHandle obj) "GetUniqueID" [] (onMultiValueResponse "GetUniqueID")
 
-openApp :: Global -> String -> String -> String -> String -> Bool -> SDKM Doc
-openApp obj docName userName password serial noData = openAppAsync obj docName userName password serial noData >>= awaitResult
 
-openAppAsync :: Global -> String -> String -> String -> String -> Bool -> SDKM (Task Doc)
-openAppAsync obj docName userName password serial noData =
-  let args = [ ("qDocName", toValue docName) ] --, ("qUserName", toValue userName), ("qPassword", toValue password), ("qSerial", toValue serial), ("qNoData", toValue noData) ]
+openApp :: Global -> String -> SDKM Doc
+openApp obj docName = openAppAsync obj docName >>= awaitResult
+
+openApp_ :: Global -> String -> String -> String -> String -> Bool -> SDKM Doc
+openApp_ obj docName userName password serial noData = openAppAsync_ obj docName userName password serial noData >>= awaitResult
+
+openAppAsync :: Global -> String -> SDKM (Task Doc)
+openAppAsync obj docName =
+  let args = [("qDocName", toValue docName)]
    in sendRequestM (getHandle obj) "OpenDoc" args (onReturnValueResponse "OpenApp")
+
+openAppAsync_ :: Global -> String -> String -> String -> String -> Bool -> SDKM (Task Doc)
+openAppAsync_ obj docName userName password serial noData =
+  let args = [("qDocName", toValue docName), ("qUserName", toValue userName), ("qPassword", toValue password), ("qSerial", toValue serial), ("qNoData", toValue noData)]
+   in sendRequestM (getHandle obj) "OpenApp" args (onReturnValueResponse "OpenApp")
+
 
 createSessionApp :: Global -> SDKM CreateSessionAppResult
 createSessionApp obj = createSessionAppAsync obj >>= awaitResult
@@ -179,6 +227,7 @@ createSessionAppAsync :: Global -> SDKM (Task CreateSessionAppResult)
 createSessionAppAsync obj =
   sendRequestM (getHandle obj) "CreateSessionApp" [] (onMultiValueResponse "CreateSessionApp")
 
+
 createSessionAppFromApp :: Global -> String -> SDKM CreateSessionAppFromAppResult
 createSessionAppFromApp obj srcAppId = createSessionAppFromAppAsync obj srcAppId >>= awaitResult
 
@@ -196,8 +245,9 @@ instance HasQSessionAppId CreateSessionAppFromAppResult String
 
 createSessionAppFromAppAsync :: Global -> String -> SDKM (Task CreateSessionAppFromAppResult)
 createSessionAppFromAppAsync obj srcAppId =
-  let args = [ ("qSrcAppId", toValue srcAppId) ]
+  let args = [("qSrcAppId", toValue srcAppId)]
    in sendRequestM (getHandle obj) "CreateSessionAppFromApp" args (onMultiValueResponse "CreateSessionAppFromApp")
+
 
 productVersion :: Global -> SDKM String
 productVersion obj = productVersionAsync obj >>= awaitResult
@@ -206,28 +256,32 @@ productVersionAsync :: Global -> SDKM (Task String)
 productVersionAsync obj =
   sendRequestM (getHandle obj) "ProductVersion" [] (onReturnValueResponse "ProductVersion")
 
+
 getAppEntry :: Global -> String -> SDKM AppEntry
 getAppEntry obj appID = getAppEntryAsync obj appID >>= awaitResult
 
 getAppEntryAsync :: Global -> String -> SDKM (Task AppEntry)
 getAppEntryAsync obj appID =
-  let args = [ ("qAppID", toValue appID) ]
-   in sendRequestM (getHandle obj) "GetAppEntry" args (onSingleValueResponse "GetAppEntry" "qEntry")
+  let args = [("qAppID", toValue appID)]
+   in sendRequestM (getHandle obj) "GetAppEntry" args (onMultiValueResponse "GetAppEntry")
+
 
 engineVersion :: Global -> SDKM NxEngineVersion
 engineVersion obj = engineVersionAsync obj >>= awaitResult
 
 engineVersionAsync :: Global -> SDKM (Task NxEngineVersion)
 engineVersionAsync obj =
-  sendRequestM (getHandle obj) "EngineVersion" [] (onSingleValueResponse "EngineVersion" "qVersion")
+  sendRequestM (getHandle obj) "EngineVersion" [] (onMultiValueResponse "EngineVersion")
+
 
 abortRequest :: Global -> Int -> SDKM ()
 abortRequest obj requestId = abortRequestAsync obj requestId >>= awaitResult
 
 abortRequestAsync :: Global -> Int -> SDKM (Task ())
 abortRequestAsync obj requestId =
-  let args = [ ("qRequestId", toValue requestId) ]
+  let args = [("qRequestId", toValue requestId)]
    in sendRequestM (getHandle obj) "AbortRequest" args (onMultiValueResponse "AbortRequest")
+
 
 abortAll :: Global -> SDKM ()
 abortAll obj = abortAllAsync obj >>= awaitResult
@@ -236,13 +290,15 @@ abortAllAsync :: Global -> SDKM (Task ())
 abortAllAsync obj =
   sendRequestM (getHandle obj) "AbortAll" [] (onMultiValueResponse "AbortAll")
 
+
 getProgress :: Global -> Int -> SDKM ProgressData
 getProgress obj requestId = getProgressAsync obj requestId >>= awaitResult
 
 getProgressAsync :: Global -> Int -> SDKM (Task ProgressData)
 getProgressAsync obj requestId =
-  let args = [ ("qRequestId", toValue requestId) ]
-   in sendRequestM (getHandle obj) "GetProgress" args (onSingleValueResponse "GetProgress" "qProgressData")
+  let args = [("qRequestId", toValue requestId)]
+   in sendRequestM (getHandle obj) "GetProgress" args (onMultiValueResponse "GetProgress")
+
 
 qvVersion :: Global -> SDKM String
 qvVersion obj = qvVersionAsync obj >>= awaitResult
@@ -251,12 +307,14 @@ qvVersionAsync :: Global -> SDKM (Task String)
 qvVersionAsync obj =
   sendRequestM (getHandle obj) "QvVersion" [] (onReturnValueResponse "QvVersion")
 
+
 oSVersion :: Global -> SDKM String
 oSVersion obj = oSVersionAsync obj >>= awaitResult
 
 oSVersionAsync :: Global -> SDKM (Task String)
 oSVersionAsync obj =
   sendRequestM (getHandle obj) "OSVersion" [] (onReturnValueResponse "OSVersion")
+
 
 oSName :: Global -> SDKM String
 oSName obj = oSNameAsync obj >>= awaitResult
@@ -265,6 +323,7 @@ oSNameAsync :: Global -> SDKM (Task String)
 oSNameAsync obj =
   sendRequestM (getHandle obj) "OSName" [] (onReturnValueResponse "OSName")
 
+
 qTProduct :: Global -> SDKM String
 qTProduct obj = qTProductAsync obj >>= awaitResult
 
@@ -272,12 +331,14 @@ qTProductAsync :: Global -> SDKM (Task String)
 qTProductAsync obj =
   sendRequestM (getHandle obj) "QTProduct" [] (onReturnValueResponse "QTProduct")
 
+
 getDocList :: Global -> SDKM [DocListEntry]
 getDocList obj = getDocListAsync obj >>= awaitResult
 
 getDocListAsync :: Global -> SDKM (Task [DocListEntry])
 getDocListAsync obj =
-  sendRequestM (getHandle obj) "GetDocList" [] (onSingleValueResponse "GetDocList" "qDocList")
+  sendRequestM (getHandle obj) "GetDocList" [] (onMultiValueResponse "GetDocList")
+
 
 getInteract :: Global -> Int -> SDKM GetInteractResult
 getInteract obj requestId = getInteractAsync obj requestId >>= awaitResult
@@ -296,16 +357,18 @@ instance HasQDef GetInteractResult InteractDef
 
 getInteractAsync :: Global -> Int -> SDKM (Task GetInteractResult)
 getInteractAsync obj requestId =
-  let args = [ ("qRequestId", toValue requestId) ]
+  let args = [("qRequestId", toValue requestId)]
    in sendRequestM (getHandle obj) "GetInteract" args (onMultiValueResponse "GetInteract")
+
 
 interactDone :: Global -> Int -> InteractDef -> SDKM ()
 interactDone obj requestId def = interactDoneAsync obj requestId def >>= awaitResult
 
 interactDoneAsync :: Global -> Int -> InteractDef -> SDKM (Task ())
 interactDoneAsync obj requestId def =
-  let args = [ ("qRequestId", toValue requestId), ("qDef", toValue def) ]
+  let args = [("qRequestId", toValue requestId), ("qDef", toValue def)]
    in sendRequestM (getHandle obj) "InteractDone" args (onMultiValueResponse "InteractDone")
+
 
 getAuthenticatedUser :: Global -> SDKM String
 getAuthenticatedUser obj = getAuthenticatedUserAsync obj >>= awaitResult
@@ -313,4 +376,5 @@ getAuthenticatedUser obj = getAuthenticatedUserAsync obj >>= awaitResult
 getAuthenticatedUserAsync :: Global -> SDKM (Task String)
 getAuthenticatedUserAsync obj =
   sendRequestM (getHandle obj) "GetAuthenticatedUser" [] (onReturnValueResponse "GetAuthenticatedUser")
+
 
