@@ -19,7 +19,6 @@ data SDKState = SDKState {
   connection           :: WS.Connection,
   requestId            :: Int,
   requestMap           :: Map Int ResponseCallback,
-  errorReceived        :: Bool,
   debugConsoleIsActive :: Bool
 }
 
@@ -27,7 +26,6 @@ initialState conn = SDKState {
   connection           = conn,
   requestId            = 0,
   requestMap           = Map.empty,
-  errorReceived        = False,
   debugConsoleIsActive = False
 }
 
@@ -59,25 +57,19 @@ newRequestIdM = atomic $ \s -> let id = requestId s
                                 in (id, s {requestId = id +1})
 
 addRequestListner :: RequestId -> ResponseCallback -> SDKM ()
-addRequestListner id callback = atomic $ \s ->
-  ((), s { requestMap = Map.insert id callback (requestMap s) })
+addRequestListner id callback = atomicWrite $ \s ->
+  s { requestMap = Map.insert id callback (requestMap s) }
 
 setResult :: ResponseMessage -> SDKM ()
 setResult r@(PushMessage _) = return ()
-setResult r@(ResponseMessage id _ _ m_error) = do
+setResult r@(ResponseMessage id _ _ _) = do
   m_callback <- atomic $ \s -> let requests = requestMap s
                                 in ( Map.lookup id requests
-                                   , s { requestMap = Map.delete id requests, errorReceived = (errorReceived s) || (isJust m_error) }
+                                   , s { requestMap = Map.delete id requests }
                                    )
   case m_callback of
     Nothing -> error $ "No request with id " ++ show id ++ " found in map."
     Just callback -> callback r
-
-setErrorState :: Bool -> SDKM ()
-setErrorState b = atomicWrite (\s -> s { errorReceived = b })
-
-getErrorState :: SDKM Bool
-getErrorState = atomicRead errorReceived
 
 activateDebugConsole, deactivateDebugConsole :: SDKM ()
 activateDebugConsole   = atomicWrite (\s -> s { debugConsoleIsActive = True  })

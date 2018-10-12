@@ -45,39 +45,42 @@ class QixClass a where
 --     Ok q -> Ok (App q)
 --   showJSON (App q) = showJSON q
 
-type ResponseProcessor a = ResponseMessage -> a
+type ResponseProcessor a = ResponseMessage -> Either String a
 type URL = String
 type Port = Int
 data Task a = Task {
 --  threadId :: ThreadId,
-  taskMVar :: MVar a
+  taskMVar :: MVar (Either String a)
 }
 type ParameterList = [(String, Value)]
 
 onVoidResponse :: String -> String -> ResponseProcessor ()
+onVoidResponse methodId propId (ResponseMessage _ _ _ (Just msg)) = Left ("Error received on call to " ++ methodId ++ ": " ++ show msg)
 onVoidResponse methodId propId (ResponseMessage _ _ m_result _) = case fmap readJSON m_result of
-  Nothing -> error $ "No result value exists for response to " ++ methodId
-  Just (Error e) -> error $ "Cannot read return value for " ++ methodId ++ ": " ++ (show m_result)
-  Just (Ok (ValueObject a)) -> ()
+  Nothing -> Left $ "No result value exists for response to " ++ methodId
+  Just (Error e) -> Left $ "Cannot read return value for " ++ methodId ++ ": " ++ (show m_result)
+  Just (Ok (ValueObject a)) -> Right ()
 
 onSingleValueResponse :: ValueType a => String -> String -> ResponseProcessor a
-onSingleValueResponse methodId propId (ResponseMessage _ _ _ (Just errorMsg)) = error $ "Error received on call to " ++ methodId ++ ": " ++ show errorMsg
+onSingleValueResponse methodId propId (ResponseMessage _ _ _ (Just errorMsg)) = Left $ "Error received on call to " ++ methodId ++ ": " ++ show errorMsg
 onSingleValueResponse methodId propId (ResponseMessage _ _ m_result _) = case fmap readJSON m_result of
-  Nothing -> error $ "No result value exists for response to " ++ methodId
-  Just (Error e) -> error $ "Cannot read return value for " ++ methodId ++ ": " ++ (show m_result)
-  Just (Ok (ValueObject a)) -> a ^. asPropValueLens propId
+  Nothing -> Left $ "No result value exists for response to " ++ methodId
+  Just (Error e) -> Left $ "Cannot read return value for " ++ methodId ++ ": " ++ (show m_result)
+  Just (Ok (ValueObject a)) -> Right $ a ^. asPropValueLens propId
 
 onMultiValueResponse :: ValueType a => String -> ResponseProcessor a
+onMultiValueResponse methodId (ResponseMessage _ _ _ (Just errorMsg)) = Left $ "Error received on call to " ++ methodId ++ ": " ++ show errorMsg
 onMultiValueResponse methodId (ResponseMessage _ m_return m_result _) = case fmap readJSON m_result of
-  Nothing -> error $ "No result value exists for response to " ++ methodId
-  Just (Error e) -> error $ "Cannot read return value for " ++ methodId ++ ": " ++ (show m_result)
-  Just (Ok a)    -> fromValue a
+  Nothing -> Left $ "No result value exists for response to " ++ methodId
+  Just (Error e) -> Left $ "Cannot read return value for " ++ methodId ++ ": " ++ (show m_result)
+  Just (Ok a)    -> Right $ fromValue a
 
 onReturnValueResponse :: ValueType a => String -> ResponseProcessor a
+onReturnValueResponse methodId (ResponseMessage _ _ _ (Just errorMsg)) = Left $ "Error received on call to " ++ methodId ++ ": " ++ show errorMsg
 onReturnValueResponse methodId (ResponseMessage _ m_return _ _) = case fmap readJSON m_return of
-  Nothing -> error $ "No return value for " ++ methodId ++ "."
-  Just (Error e) -> error $ "Cannot read return value for " ++ methodId ++ "."
-  Just (Ok a) ->  fromValue a
+  Nothing -> Left $ "No return value for " ++ methodId ++ "."
+  Just (Error e) -> Left $ "Cannot read return value for " ++ methodId ++ "."
+  Just (Ok a) ->  Right $ fromValue a
 
 parseResponseMessage :: Text -> ResponseMessage
 parseResponseMessage msg =
@@ -147,11 +150,20 @@ withConnection url port m = do
  
 runSDK :: SDKM () -> WS.ClientApp ()
 runSDK m conn = do
-  liftIO (putStrLn "runSDK")
   stateVar <- liftIO $ newMVar (initialState conn)
   forkIO $ evalStateT responseListner stateVar
   evalStateT m stateVar
   WS.sendClose conn (T.pack "Bye!")
 
+awaitResult_ :: Task a -> SDKM (Either String a)
+awaitResult_ = liftIO.takeMVar.taskMVar
+
 awaitResult :: Task a -> SDKM a
-awaitResult = liftIO.takeMVar.taskMVar
+awaitResult task = fmap (either error id) (awaitResult_ task)
+
+tryAwaitResult :: SDKM (Task a) -> (a -> SDKM b) -> (String -> SDKM b) -> SDKM b
+tryAwaitResult m onSuccess onError = do
+  e_result <- m >>= awaitResult_
+  case e_result of
+    Left str -> onError str
+    Right x  -> onSuccess x
