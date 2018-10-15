@@ -8,6 +8,7 @@ import Text.JSON
 import Control.Lens
 import AbstractStructure
 import HardCoded
+import Task
 import SDKMonad
 import SDKBase
 import PropClasses

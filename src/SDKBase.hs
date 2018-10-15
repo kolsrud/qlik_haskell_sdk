@@ -24,6 +24,7 @@ import qualified Data.Map as Map
 import Data.List
 import Control.Exception (catch)
 import SDKMonad
+import Task
 import AbstractStructure
 import Debug.Trace
 
@@ -48,10 +49,6 @@ class QixClass a where
 type ResponseProcessor a = ResponseMessage -> Either String a
 type URL = String
 type Port = Int
-data Task a = Task {
---  threadId :: ThreadId,
-  taskMVar :: MVar (Either String a)
-}
 type ParameterList = [(String, Value)]
 
 onVoidResponse :: String -> String -> ResponseProcessor ()
@@ -133,9 +130,9 @@ responseListner = do
 
 makeResponseTask :: RequestId -> ResponseProcessor a -> SDKM (Task a)
 makeResponseTask id onResponse = do
-  mvar <- liftIO $ newEmptyMVar
-  addRequestListner id (\response -> liftIO $ putMVar mvar (onResponse response))
-  return (Task { taskMVar = mvar })
+  task <- newTask
+  addRequestListner id ((writeTask task) . onResponse)
+  return task
 
 withConnection :: URL -> Port -> SDKM () -> IO ()
 withConnection url port m = do
@@ -154,16 +151,3 @@ runSDK m conn = do
   forkIO $ evalStateT responseListner stateVar
   evalStateT m stateVar
   WS.sendClose conn (T.pack "Bye!")
-
-awaitResult_ :: Task a -> SDKM (Either String a)
-awaitResult_ = liftIO.takeMVar.taskMVar
-
-awaitResult :: Task a -> SDKM a
-awaitResult task = fmap (either error id) (awaitResult_ task)
-
-tryAwaitResult :: SDKM (Task a) -> (a -> SDKM b) -> (String -> SDKM b) -> SDKM b
-tryAwaitResult m onSuccess onError = do
-  e_result <- m >>= awaitResult_
-  case e_result of
-    Left str -> onError str
-    Right x  -> onSuccess x

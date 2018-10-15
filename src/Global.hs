@@ -8,6 +8,7 @@ import Text.JSON
 import Control.Lens
 import AbstractStructure
 import HardCoded
+import Task
 import SDKMonad
 import SDKBase
 import PropClasses
@@ -200,7 +201,7 @@ openApp_ obj docName userName password serial noData = openAppAsync_ obj docName
 openAppAsync :: Global -> String -> SDKM (Task Doc)
 openAppAsync obj docName =
   let args = [("qDocName", toValue docName)]
-   in sendRequestM (getHandle obj) "OpenDoc" args (onReturnValueResponse "OpenApp")
+   in sendRequestM (getHandle obj) "OpenApp" args (onReturnValueResponse "OpenApp")
 
 openAppAsync_ :: Global -> String -> String -> String -> String -> Bool -> SDKM (Task Doc)
 openAppAsync_ obj docName userName password serial noData =
