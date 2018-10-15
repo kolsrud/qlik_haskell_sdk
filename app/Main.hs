@@ -25,12 +25,12 @@ main = do
   
 myProg :: SDKM ()
 myProg = do
-  app <- openApp global "Sales Discovery" undefined undefined undefined undefined
+  app <- openApp global "Sales Discovery"
   v   <- evaluate app "Sum([Sales Amount])"
   liftIO $ putStrLn v
 
 myProg2 = do
-  app        <- openApp global "Sales Discovery" undefined undefined undefined undefined
+  app        <- openApp global "Sales Discovery"
   sheetList  <- createSessionObject app sheetListProps
   listLayout <- getLayout sheetList
   if (null (listLayout ^. qExtendsId))
