@@ -1,6 +1,7 @@
 module Task
 ( Task
 , newTask
+, fromError, fromResult
 , awaitResult, awaitResult_
 , tryAwaitResult
 , writeTask
@@ -22,9 +23,10 @@ t0 >-> f = do r0 <- t0 >>= awaitResult_
                 Right x  -> f x
 
 fromError :: MonadIO m => String -> m (Task a)
-fromError msg = do t <- newTask
-                   writeTask t (Left msg)
-                   return t
+fromError = fromResult.Left
+
+fromValue :: MonadIO m => a -> m (Task a)
+fromValue = fromResult.Right
 
 fromResult :: MonadIO m => Either String a -> m (Task a)
 fromResult x = do t <- newTask
