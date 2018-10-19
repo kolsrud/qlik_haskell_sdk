@@ -1,7 +1,7 @@
 module Main where
 
 import SDKBase -- (withConnection, asSet, emptyAs)
-import SDKMonad (SDKM)
+import SDKMonad (SDKM, activateDebugConsole)
 import Control.Monad.Trans (liftIO)
 import Text.JSON (encode)
 import Data.Maybe
@@ -25,6 +25,7 @@ main = do
   
 myProg :: SDKM ()
 myProg = do
+  activateDebugConsole
   app <- openApp global "Sales Discovery"
   v   <- evaluate app "Sum([Sales Amount])"
   liftIO $ putStrLn v
