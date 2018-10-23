@@ -5,7 +5,7 @@ module Task
 , awaitResult, awaitResult_
 , tryAwaitResult
 , writeTask
-, (>->)
+, (>->), (>-)
 ) where
 
 import Control.Monad.IO.Class
@@ -21,6 +21,9 @@ t0 >-> f = do r0 <- t0 >>= awaitResult_
               case r0 of
                 Left msg -> fromError msg
                 Right x  -> f x
+
+(>-) :: MonadIO m => m (Task a) -> m (Task b) -> m (Task b)
+t0 >- t1 = t0 >-> (\_ -> t1)
 
 fromError :: MonadIO m => String -> m (Task a)
 fromError = fromResult.Left
