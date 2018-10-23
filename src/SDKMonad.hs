@@ -1,5 +1,6 @@
 module SDKMonad where
 
+import System.IO (hFlush, stdout)
 import Control.Monad.Trans (liftIO)
 import Control.Concurrent.MVar
 import Control.Monad.State.Lazy
@@ -78,4 +79,4 @@ deactivateDebugConsole = atomicWrite (\s -> s { debugConsoleIsActive = False })
 printToDebugConsole :: String -> SDKM ()
 printToDebugConsole msg = do
   debugConsole <- atomicRead debugConsoleIsActive
-  when debugConsole (liftIO $ putStrLn msg)
+  when debugConsole (liftIO $ putStrLn msg >> hFlush stdout)
