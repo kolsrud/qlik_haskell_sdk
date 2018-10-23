@@ -21,7 +21,7 @@ getLayout obj = getLayoutAsync obj >>= awaitResult
 
 getLayoutAsync :: GenericDimension -> SDKM (Task GenericDimensionLayout)
 getLayoutAsync obj =
-  sendRequestM (getHandle obj) "GetLayout" [] (onMultiValueResponse "GetLayout")
+  sendRequestM (getHandle obj) "GetLayout" [] (onSingleValueResponse "GetLayout" "qLayout")
 
 
 applyPatches :: GenericDimension -> [NxPatch] -> SDKM ()
@@ -47,7 +47,7 @@ getProperties obj = getPropertiesAsync obj >>= awaitResult
 
 getPropertiesAsync :: GenericDimension -> SDKM (Task GenericDimensionProperties)
 getPropertiesAsync obj =
-  sendRequestM (getHandle obj) "GetProperties" [] (onMultiValueResponse "GetProperties")
+  sendRequestM (getHandle obj) "GetProperties" [] (onSingleValueResponse "GetProperties" "qProp")
 
 
 getInfo :: GenericDimension -> SDKM NxInfo
@@ -55,7 +55,7 @@ getInfo obj = getInfoAsync obj >>= awaitResult
 
 getInfoAsync :: GenericDimension -> SDKM (Task NxInfo)
 getInfoAsync obj =
-  sendRequestM (getHandle obj) "GetInfo" [] (onMultiValueResponse "GetInfo")
+  sendRequestM (getHandle obj) "GetInfo" [] (onSingleValueResponse "GetInfo" "qInfo")
 
 
 getDimension :: GenericDimension -> SDKM NxLibraryDimensionDef
@@ -63,7 +63,7 @@ getDimension obj = getDimensionAsync obj >>= awaitResult
 
 getDimensionAsync :: GenericDimension -> SDKM (Task NxLibraryDimensionDef)
 getDimensionAsync obj =
-  sendRequestM (getHandle obj) "GetDimension" [] (onMultiValueResponse "GetDimension")
+  sendRequestM (getHandle obj) "GetDimension" [] (onSingleValueResponse "GetDimension" "qDim")
 
 
 getLinkedObjects :: GenericDimension -> SDKM [NxLinkedObjectInfo]
@@ -71,7 +71,7 @@ getLinkedObjects obj = getLinkedObjectsAsync obj >>= awaitResult
 
 getLinkedObjectsAsync :: GenericDimension -> SDKM (Task [NxLinkedObjectInfo])
 getLinkedObjectsAsync obj =
-  sendRequestM (getHandle obj) "GetLinkedObjects" [] (onMultiValueResponse "GetLinkedObjects")
+  sendRequestM (getHandle obj) "GetLinkedObjects" [] (onSingleValueResponse "GetLinkedObjects" "qItems")
 
 
 publish :: GenericDimension -> SDKM ()

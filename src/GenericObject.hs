@@ -21,7 +21,7 @@ getLayout obj = getLayoutAsync obj >>= awaitResult
 
 getLayoutAsync :: GenericObject -> SDKM (Task GenericObjectLayout)
 getLayoutAsync obj =
-  sendRequestM (getHandle obj) "GetLayout" [] (onMultiValueResponse "GetLayout")
+  sendRequestM (getHandle obj) "GetLayout" [] (onSingleValueResponse "GetLayout" "qLayout")
 
 
 getListObjectData :: GenericObject -> String -> [NxPage] -> SDKM [NxDataPage]
@@ -30,7 +30,7 @@ getListObjectData obj path pages = getListObjectDataAsync obj path pages >>= awa
 getListObjectDataAsync :: GenericObject -> String -> [NxPage] -> SDKM (Task [NxDataPage])
 getListObjectDataAsync obj path pages =
   let args = [("qPath", toValue path), ("qPages", toValue pages)]
-   in sendRequestM (getHandle obj) "GetListObjectData" args (onMultiValueResponse "GetListObjectData")
+   in sendRequestM (getHandle obj) "GetListObjectData" args (onSingleValueResponse "GetListObjectData" "qDataPages")
 
 
 getHyperCubeData :: GenericObject -> String -> [NxPage] -> SDKM [NxDataPage]
@@ -39,7 +39,7 @@ getHyperCubeData obj path pages = getHyperCubeDataAsync obj path pages >>= await
 getHyperCubeDataAsync :: GenericObject -> String -> [NxPage] -> SDKM (Task [NxDataPage])
 getHyperCubeDataAsync obj path pages =
   let args = [("qPath", toValue path), ("qPages", toValue pages)]
-   in sendRequestM (getHandle obj) "GetHyperCubeData" args (onMultiValueResponse "GetHyperCubeData")
+   in sendRequestM (getHandle obj) "GetHyperCubeData" args (onSingleValueResponse "GetHyperCubeData" "qDataPages")
 
 
 getHyperCubeReducedData :: GenericObject -> String -> [NxPage] -> Int -> NxDataReductionMode -> SDKM [NxDataPage]
@@ -48,7 +48,7 @@ getHyperCubeReducedData obj path pages zoomFactor reductionMode = getHyperCubeRe
 getHyperCubeReducedDataAsync :: GenericObject -> String -> [NxPage] -> Int -> NxDataReductionMode -> SDKM (Task [NxDataPage])
 getHyperCubeReducedDataAsync obj path pages zoomFactor reductionMode =
   let args = [("qPath", toValue path), ("qPages", toValue pages), ("qZoomFactor", toValue zoomFactor), ("qReductionMode", toValue reductionMode)]
-   in sendRequestM (getHandle obj) "GetHyperCubeReducedData" args (onMultiValueResponse "GetHyperCubeReducedData")
+   in sendRequestM (getHandle obj) "GetHyperCubeReducedData" args (onSingleValueResponse "GetHyperCubeReducedData" "qDataPages")
 
 
 getHyperCubePivotData :: GenericObject -> String -> [NxPage] -> SDKM [NxPivotPage]
@@ -57,7 +57,7 @@ getHyperCubePivotData obj path pages = getHyperCubePivotDataAsync obj path pages
 getHyperCubePivotDataAsync :: GenericObject -> String -> [NxPage] -> SDKM (Task [NxPivotPage])
 getHyperCubePivotDataAsync obj path pages =
   let args = [("qPath", toValue path), ("qPages", toValue pages)]
-   in sendRequestM (getHandle obj) "GetHyperCubePivotData" args (onMultiValueResponse "GetHyperCubePivotData")
+   in sendRequestM (getHandle obj) "GetHyperCubePivotData" args (onSingleValueResponse "GetHyperCubePivotData" "qDataPages")
 
 
 getHyperCubeStackData :: GenericObject -> String -> [NxPage] -> SDKM [NxStackPage]
@@ -69,12 +69,12 @@ getHyperCubeStackData_ obj path pages maxNbrCells = getHyperCubeStackDataAsync_ 
 getHyperCubeStackDataAsync :: GenericObject -> String -> [NxPage] -> SDKM (Task [NxStackPage])
 getHyperCubeStackDataAsync obj path pages =
   let args = [("qPath", toValue path), ("qPages", toValue pages)]
-   in sendRequestM (getHandle obj) "GetHyperCubeStackData" args (onMultiValueResponse "GetHyperCubeStackData")
+   in sendRequestM (getHandle obj) "GetHyperCubeStackData" args (onSingleValueResponse "GetHyperCubeStackData" "qDataPages")
 
 getHyperCubeStackDataAsync_ :: GenericObject -> String -> [NxPage] -> Int -> SDKM (Task [NxStackPage])
 getHyperCubeStackDataAsync_ obj path pages maxNbrCells =
   let args = [("qPath", toValue path), ("qPages", toValue pages), ("qMaxNbrCells", toValue maxNbrCells)]
-   in sendRequestM (getHandle obj) "GetHyperCubeStackData" args (onMultiValueResponse "GetHyperCubeStackData")
+   in sendRequestM (getHandle obj) "GetHyperCubeStackData" args (onSingleValueResponse "GetHyperCubeStackData" "qDataPages")
 
 
 getHyperCubeContinuousData :: GenericObject -> String -> NxContinuousDataOptions -> SDKM GetHyperCubeContinuousDataResult
@@ -115,12 +115,12 @@ getHyperCubeTreeData_ obj path nodeOptions = getHyperCubeTreeDataAsync_ obj path
 getHyperCubeTreeDataAsync :: GenericObject -> String -> SDKM (Task [NxTreeNode])
 getHyperCubeTreeDataAsync obj path =
   let args = [("qPath", toValue path)]
-   in sendRequestM (getHandle obj) "GetHyperCubeTreeData" args (onMultiValueResponse "GetHyperCubeTreeData")
+   in sendRequestM (getHandle obj) "GetHyperCubeTreeData" args (onSingleValueResponse "GetHyperCubeTreeData" "qNodes")
 
 getHyperCubeTreeDataAsync_ :: GenericObject -> String -> NxTreeDataOption -> SDKM (Task [NxTreeNode])
 getHyperCubeTreeDataAsync_ obj path nodeOptions =
   let args = [("qPath", toValue path), ("qNodeOptions", toValue nodeOptions)]
-   in sendRequestM (getHandle obj) "GetHyperCubeTreeData" args (onMultiValueResponse "GetHyperCubeTreeData")
+   in sendRequestM (getHandle obj) "GetHyperCubeTreeData" args (onSingleValueResponse "GetHyperCubeTreeData" "qNodes")
 
 
 getHyperCubeBinnedData :: GenericObject -> String -> [NxPage] -> NxViewPort -> [NxDataAreaPage] -> Int -> Int -> Int -> SDKM [NxDataPage]
@@ -129,7 +129,7 @@ getHyperCubeBinnedData obj path pages viewport dataRanges maxNbrCells queryLevel
 getHyperCubeBinnedDataAsync :: GenericObject -> String -> [NxPage] -> NxViewPort -> [NxDataAreaPage] -> Int -> Int -> Int -> SDKM (Task [NxDataPage])
 getHyperCubeBinnedDataAsync obj path pages viewport dataRanges maxNbrCells queryLevel binningMethod =
   let args = [("qPath", toValue path), ("qPages", toValue pages), ("qViewport", toValue viewport), ("qDataRanges", toValue dataRanges), ("qMaxNbrCells", toValue maxNbrCells), ("qQueryLevel", toValue queryLevel), ("qBinningMethod", toValue binningMethod)]
-   in sendRequestM (getHandle obj) "GetHyperCubeBinnedData" args (onMultiValueResponse "GetHyperCubeBinnedData")
+   in sendRequestM (getHandle obj) "GetHyperCubeBinnedData" args (onSingleValueResponse "GetHyperCubeBinnedData" "qDataPages")
 
 
 applyPatches :: GenericObject -> [NxPatch] -> SDKM ()
@@ -171,7 +171,7 @@ getProperties obj = getPropertiesAsync obj >>= awaitResult
 
 getPropertiesAsync :: GenericObject -> SDKM (Task GenericObjectProperties)
 getPropertiesAsync obj =
-  sendRequestM (getHandle obj) "GetProperties" [] (onMultiValueResponse "GetProperties")
+  sendRequestM (getHandle obj) "GetProperties" [] (onSingleValueResponse "GetProperties" "qProp")
 
 
 getEffectiveProperties :: GenericObject -> SDKM GenericObjectProperties
@@ -179,7 +179,7 @@ getEffectiveProperties obj = getEffectivePropertiesAsync obj >>= awaitResult
 
 getEffectivePropertiesAsync :: GenericObject -> SDKM (Task GenericObjectProperties)
 getEffectivePropertiesAsync obj =
-  sendRequestM (getHandle obj) "GetEffectiveProperties" [] (onMultiValueResponse "GetEffectiveProperties")
+  sendRequestM (getHandle obj) "GetEffectiveProperties" [] (onSingleValueResponse "GetEffectiveProperties" "qProp")
 
 
 setFullPropertyTree :: GenericObject -> GenericObjectEntry -> SDKM ()
@@ -196,7 +196,7 @@ getFullPropertyTree obj = getFullPropertyTreeAsync obj >>= awaitResult
 
 getFullPropertyTreeAsync :: GenericObject -> SDKM (Task GenericObjectEntry)
 getFullPropertyTreeAsync obj =
-  sendRequestM (getHandle obj) "GetFullPropertyTree" [] (onMultiValueResponse "GetFullPropertyTree")
+  sendRequestM (getHandle obj) "GetFullPropertyTree" [] (onSingleValueResponse "GetFullPropertyTree" "qPropEntry")
 
 
 getInfo :: GenericObject -> SDKM NxInfo
@@ -204,7 +204,7 @@ getInfo obj = getInfoAsync obj >>= awaitResult
 
 getInfoAsync :: GenericObject -> SDKM (Task NxInfo)
 getInfoAsync obj =
-  sendRequestM (getHandle obj) "GetInfo" [] (onMultiValueResponse "GetInfo")
+  sendRequestM (getHandle obj) "GetInfo" [] (onSingleValueResponse "GetInfo" "qInfo")
 
 
 clearSelections :: GenericObject -> String -> SDKM ()
@@ -262,12 +262,12 @@ selectListObjectValues_ obj path values toggleMode softLock = selectListObjectVa
 selectListObjectValuesAsync :: GenericObject -> String -> [Int] -> Bool -> SDKM (Task Bool)
 selectListObjectValuesAsync obj path values toggleMode =
   let args = [("qPath", toValue path), ("qValues", toValue values), ("qToggleMode", toValue toggleMode)]
-   in sendRequestM (getHandle obj) "SelectListObjectValues" args (onMultiValueResponse "SelectListObjectValues")
+   in sendRequestM (getHandle obj) "SelectListObjectValues" args (onSingleValueResponse "SelectListObjectValues" "qSuccess")
 
 selectListObjectValuesAsync_ :: GenericObject -> String -> [Int] -> Bool -> Bool -> SDKM (Task Bool)
 selectListObjectValuesAsync_ obj path values toggleMode softLock =
   let args = [("qPath", toValue path), ("qValues", toValue values), ("qToggleMode", toValue toggleMode), ("qSoftLock", toValue softLock)]
-   in sendRequestM (getHandle obj) "SelectListObjectValues" args (onMultiValueResponse "SelectListObjectValues")
+   in sendRequestM (getHandle obj) "SelectListObjectValues" args (onSingleValueResponse "SelectListObjectValues" "qSuccess")
 
 
 selectListObjectPossible :: GenericObject -> String -> SDKM Bool
@@ -279,12 +279,12 @@ selectListObjectPossible_ obj path softLock = selectListObjectPossibleAsync_ obj
 selectListObjectPossibleAsync :: GenericObject -> String -> SDKM (Task Bool)
 selectListObjectPossibleAsync obj path =
   let args = [("qPath", toValue path)]
-   in sendRequestM (getHandle obj) "SelectListObjectPossible" args (onMultiValueResponse "SelectListObjectPossible")
+   in sendRequestM (getHandle obj) "SelectListObjectPossible" args (onSingleValueResponse "SelectListObjectPossible" "qSuccess")
 
 selectListObjectPossibleAsync_ :: GenericObject -> String -> Bool -> SDKM (Task Bool)
 selectListObjectPossibleAsync_ obj path softLock =
   let args = [("qPath", toValue path), ("qSoftLock", toValue softLock)]
-   in sendRequestM (getHandle obj) "SelectListObjectPossible" args (onMultiValueResponse "SelectListObjectPossible")
+   in sendRequestM (getHandle obj) "SelectListObjectPossible" args (onSingleValueResponse "SelectListObjectPossible" "qSuccess")
 
 
 selectListObjectExcluded :: GenericObject -> String -> SDKM Bool
@@ -296,12 +296,12 @@ selectListObjectExcluded_ obj path softLock = selectListObjectExcludedAsync_ obj
 selectListObjectExcludedAsync :: GenericObject -> String -> SDKM (Task Bool)
 selectListObjectExcludedAsync obj path =
   let args = [("qPath", toValue path)]
-   in sendRequestM (getHandle obj) "SelectListObjectExcluded" args (onMultiValueResponse "SelectListObjectExcluded")
+   in sendRequestM (getHandle obj) "SelectListObjectExcluded" args (onSingleValueResponse "SelectListObjectExcluded" "qSuccess")
 
 selectListObjectExcludedAsync_ :: GenericObject -> String -> Bool -> SDKM (Task Bool)
 selectListObjectExcludedAsync_ obj path softLock =
   let args = [("qPath", toValue path), ("qSoftLock", toValue softLock)]
-   in sendRequestM (getHandle obj) "SelectListObjectExcluded" args (onMultiValueResponse "SelectListObjectExcluded")
+   in sendRequestM (getHandle obj) "SelectListObjectExcluded" args (onSingleValueResponse "SelectListObjectExcluded" "qSuccess")
 
 
 selectListObjectAlternative :: GenericObject -> String -> SDKM Bool
@@ -313,12 +313,12 @@ selectListObjectAlternative_ obj path softLock = selectListObjectAlternativeAsyn
 selectListObjectAlternativeAsync :: GenericObject -> String -> SDKM (Task Bool)
 selectListObjectAlternativeAsync obj path =
   let args = [("qPath", toValue path)]
-   in sendRequestM (getHandle obj) "SelectListObjectAlternative" args (onMultiValueResponse "SelectListObjectAlternative")
+   in sendRequestM (getHandle obj) "SelectListObjectAlternative" args (onSingleValueResponse "SelectListObjectAlternative" "qSuccess")
 
 selectListObjectAlternativeAsync_ :: GenericObject -> String -> Bool -> SDKM (Task Bool)
 selectListObjectAlternativeAsync_ obj path softLock =
   let args = [("qPath", toValue path), ("qSoftLock", toValue softLock)]
-   in sendRequestM (getHandle obj) "SelectListObjectAlternative" args (onMultiValueResponse "SelectListObjectAlternative")
+   in sendRequestM (getHandle obj) "SelectListObjectAlternative" args (onSingleValueResponse "SelectListObjectAlternative" "qSuccess")
 
 
 selectListObjectAll :: GenericObject -> String -> SDKM Bool
@@ -330,12 +330,12 @@ selectListObjectAll_ obj path softLock = selectListObjectAllAsync_ obj path soft
 selectListObjectAllAsync :: GenericObject -> String -> SDKM (Task Bool)
 selectListObjectAllAsync obj path =
   let args = [("qPath", toValue path)]
-   in sendRequestM (getHandle obj) "SelectListObjectAll" args (onMultiValueResponse "SelectListObjectAll")
+   in sendRequestM (getHandle obj) "SelectListObjectAll" args (onSingleValueResponse "SelectListObjectAll" "qSuccess")
 
 selectListObjectAllAsync_ :: GenericObject -> String -> Bool -> SDKM (Task Bool)
 selectListObjectAllAsync_ obj path softLock =
   let args = [("qPath", toValue path), ("qSoftLock", toValue softLock)]
-   in sendRequestM (getHandle obj) "SelectListObjectAll" args (onMultiValueResponse "SelectListObjectAll")
+   in sendRequestM (getHandle obj) "SelectListObjectAll" args (onSingleValueResponse "SelectListObjectAll" "qSuccess")
 
 
 selectListObjectContinuousRange :: GenericObject -> String -> [Range] -> SDKM Bool
@@ -347,12 +347,12 @@ selectListObjectContinuousRange_ obj path ranges softLock = selectListObjectCont
 selectListObjectContinuousRangeAsync :: GenericObject -> String -> [Range] -> SDKM (Task Bool)
 selectListObjectContinuousRangeAsync obj path ranges =
   let args = [("qPath", toValue path), ("qRanges", toValue ranges)]
-   in sendRequestM (getHandle obj) "SelectListObjectContinuousRange" args (onMultiValueResponse "SelectListObjectContinuousRange")
+   in sendRequestM (getHandle obj) "SelectListObjectContinuousRange" args (onSingleValueResponse "SelectListObjectContinuousRange" "qSuccess")
 
 selectListObjectContinuousRangeAsync_ :: GenericObject -> String -> [Range] -> Bool -> SDKM (Task Bool)
 selectListObjectContinuousRangeAsync_ obj path ranges softLock =
   let args = [("qPath", toValue path), ("qRanges", toValue ranges), ("qSoftLock", toValue softLock)]
-   in sendRequestM (getHandle obj) "SelectListObjectContinuousRange" args (onMultiValueResponse "SelectListObjectContinuousRange")
+   in sendRequestM (getHandle obj) "SelectListObjectContinuousRange" args (onSingleValueResponse "SelectListObjectContinuousRange" "qSuccess")
 
 
 searchListObjectFor :: GenericObject -> String -> String -> SDKM Bool
@@ -361,7 +361,7 @@ searchListObjectFor obj path match = searchListObjectForAsync obj path match >>=
 searchListObjectForAsync :: GenericObject -> String -> String -> SDKM (Task Bool)
 searchListObjectForAsync obj path match =
   let args = [("qPath", toValue path), ("qMatch", toValue match)]
-   in sendRequestM (getHandle obj) "SearchListObjectFor" args (onMultiValueResponse "SearchListObjectFor")
+   in sendRequestM (getHandle obj) "SearchListObjectFor" args (onSingleValueResponse "SearchListObjectFor" "qSuccess")
 
 
 abortListObjectSearch :: GenericObject -> String -> SDKM ()
@@ -475,7 +475,7 @@ selectHyperCubeValues obj path dimNo values toggleMode = selectHyperCubeValuesAs
 selectHyperCubeValuesAsync :: GenericObject -> String -> Int -> [Int] -> Bool -> SDKM (Task Bool)
 selectHyperCubeValuesAsync obj path dimNo values toggleMode =
   let args = [("qPath", toValue path), ("qDimNo", toValue dimNo), ("qValues", toValue values), ("qToggleMode", toValue toggleMode)]
-   in sendRequestM (getHandle obj) "SelectHyperCubeValues" args (onMultiValueResponse "SelectHyperCubeValues")
+   in sendRequestM (getHandle obj) "SelectHyperCubeValues" args (onSingleValueResponse "SelectHyperCubeValues" "qSuccess")
 
 
 selectHyperCubeCells :: GenericObject -> String -> [Int] -> [Int] -> SDKM Bool
@@ -487,12 +487,12 @@ selectHyperCubeCells_ obj path rowIndices colIndices softLock deselectOnlyOneSel
 selectHyperCubeCellsAsync :: GenericObject -> String -> [Int] -> [Int] -> SDKM (Task Bool)
 selectHyperCubeCellsAsync obj path rowIndices colIndices =
   let args = [("qPath", toValue path), ("qRowIndices", toValue rowIndices), ("qColIndices", toValue colIndices)]
-   in sendRequestM (getHandle obj) "SelectHyperCubeCells" args (onMultiValueResponse "SelectHyperCubeCells")
+   in sendRequestM (getHandle obj) "SelectHyperCubeCells" args (onSingleValueResponse "SelectHyperCubeCells" "qSuccess")
 
 selectHyperCubeCellsAsync_ :: GenericObject -> String -> [Int] -> [Int] -> Bool -> Bool -> SDKM (Task Bool)
 selectHyperCubeCellsAsync_ obj path rowIndices colIndices softLock deselectOnlyOneSelected =
   let args = [("qPath", toValue path), ("qRowIndices", toValue rowIndices), ("qColIndices", toValue colIndices), ("qSoftLock", toValue softLock), ("qDeselectOnlyOneSelected", toValue deselectOnlyOneSelected)]
-   in sendRequestM (getHandle obj) "SelectHyperCubeCells" args (onMultiValueResponse "SelectHyperCubeCells")
+   in sendRequestM (getHandle obj) "SelectHyperCubeCells" args (onSingleValueResponse "SelectHyperCubeCells" "qSuccess")
 
 
 selectPivotCells :: GenericObject -> String -> [NxSelectionCell] -> SDKM Bool
@@ -504,12 +504,12 @@ selectPivotCells_ obj path selections softLock deselectOnlyOneSelected = selectP
 selectPivotCellsAsync :: GenericObject -> String -> [NxSelectionCell] -> SDKM (Task Bool)
 selectPivotCellsAsync obj path selections =
   let args = [("qPath", toValue path), ("qSelections", toValue selections)]
-   in sendRequestM (getHandle obj) "SelectPivotCells" args (onMultiValueResponse "SelectPivotCells")
+   in sendRequestM (getHandle obj) "SelectPivotCells" args (onSingleValueResponse "SelectPivotCells" "qSuccess")
 
 selectPivotCellsAsync_ :: GenericObject -> String -> [NxSelectionCell] -> Bool -> Bool -> SDKM (Task Bool)
 selectPivotCellsAsync_ obj path selections softLock deselectOnlyOneSelected =
   let args = [("qPath", toValue path), ("qSelections", toValue selections), ("qSoftLock", toValue softLock), ("qDeselectOnlyOneSelected", toValue deselectOnlyOneSelected)]
-   in sendRequestM (getHandle obj) "SelectPivotCells" args (onMultiValueResponse "SelectPivotCells")
+   in sendRequestM (getHandle obj) "SelectPivotCells" args (onSingleValueResponse "SelectPivotCells" "qSuccess")
 
 
 rangeSelectHyperCubeValues :: GenericObject -> String -> [NxRangeSelectInfo] -> SDKM Bool
@@ -521,12 +521,12 @@ rangeSelectHyperCubeValues_ obj path ranges columnsToSelect orMode deselectOnlyO
 rangeSelectHyperCubeValuesAsync :: GenericObject -> String -> [NxRangeSelectInfo] -> SDKM (Task Bool)
 rangeSelectHyperCubeValuesAsync obj path ranges =
   let args = [("qPath", toValue path), ("qRanges", toValue ranges)]
-   in sendRequestM (getHandle obj) "RangeSelectHyperCubeValues" args (onMultiValueResponse "RangeSelectHyperCubeValues")
+   in sendRequestM (getHandle obj) "RangeSelectHyperCubeValues" args (onSingleValueResponse "RangeSelectHyperCubeValues" "qSuccess")
 
 rangeSelectHyperCubeValuesAsync_ :: GenericObject -> String -> [NxRangeSelectInfo] -> [Int] -> Bool -> Bool -> SDKM (Task Bool)
 rangeSelectHyperCubeValuesAsync_ obj path ranges columnsToSelect orMode deselectOnlyOneSelected =
   let args = [("qPath", toValue path), ("qRanges", toValue ranges), ("qColumnsToSelect", toValue columnsToSelect), ("qOrMode", toValue orMode), ("qDeselectOnlyOneSelected", toValue deselectOnlyOneSelected)]
-   in sendRequestM (getHandle obj) "RangeSelectHyperCubeValues" args (onMultiValueResponse "RangeSelectHyperCubeValues")
+   in sendRequestM (getHandle obj) "RangeSelectHyperCubeValues" args (onSingleValueResponse "RangeSelectHyperCubeValues" "qSuccess")
 
 
 multiRangeSelectHyperCubeValues :: GenericObject -> String -> [NxMultiRangeSelectInfo] -> SDKM Bool
@@ -538,12 +538,12 @@ multiRangeSelectHyperCubeValues_ obj path ranges orMode deselectOnlyOneSelected 
 multiRangeSelectHyperCubeValuesAsync :: GenericObject -> String -> [NxMultiRangeSelectInfo] -> SDKM (Task Bool)
 multiRangeSelectHyperCubeValuesAsync obj path ranges =
   let args = [("qPath", toValue path), ("qRanges", toValue ranges)]
-   in sendRequestM (getHandle obj) "MultiRangeSelectHyperCubeValues" args (onMultiValueResponse "MultiRangeSelectHyperCubeValues")
+   in sendRequestM (getHandle obj) "MultiRangeSelectHyperCubeValues" args (onSingleValueResponse "MultiRangeSelectHyperCubeValues" "qSuccess")
 
 multiRangeSelectHyperCubeValuesAsync_ :: GenericObject -> String -> [NxMultiRangeSelectInfo] -> Bool -> Bool -> SDKM (Task Bool)
 multiRangeSelectHyperCubeValuesAsync_ obj path ranges orMode deselectOnlyOneSelected =
   let args = [("qPath", toValue path), ("qRanges", toValue ranges), ("qOrMode", toValue orMode), ("qDeselectOnlyOneSelected", toValue deselectOnlyOneSelected)]
-   in sendRequestM (getHandle obj) "MultiRangeSelectHyperCubeValues" args (onMultiValueResponse "MultiRangeSelectHyperCubeValues")
+   in sendRequestM (getHandle obj) "MultiRangeSelectHyperCubeValues" args (onSingleValueResponse "MultiRangeSelectHyperCubeValues" "qSuccess")
 
 
 multiRangeSelectTreeDataValues :: GenericObject -> String -> [NxTreeMultiRangeSelectInfo] -> SDKM Bool
@@ -555,12 +555,12 @@ multiRangeSelectTreeDataValues_ obj path ranges orMode deselectOnlyOneSelected =
 multiRangeSelectTreeDataValuesAsync :: GenericObject -> String -> [NxTreeMultiRangeSelectInfo] -> SDKM (Task Bool)
 multiRangeSelectTreeDataValuesAsync obj path ranges =
   let args = [("qPath", toValue path), ("qRanges", toValue ranges)]
-   in sendRequestM (getHandle obj) "MultiRangeSelectTreeDataValues" args (onMultiValueResponse "MultiRangeSelectTreeDataValues")
+   in sendRequestM (getHandle obj) "MultiRangeSelectTreeDataValues" args (onSingleValueResponse "MultiRangeSelectTreeDataValues" "qSuccess")
 
 multiRangeSelectTreeDataValuesAsync_ :: GenericObject -> String -> [NxTreeMultiRangeSelectInfo] -> Bool -> Bool -> SDKM (Task Bool)
 multiRangeSelectTreeDataValuesAsync_ obj path ranges orMode deselectOnlyOneSelected =
   let args = [("qPath", toValue path), ("qRanges", toValue ranges), ("qOrMode", toValue orMode), ("qDeselectOnlyOneSelected", toValue deselectOnlyOneSelected)]
-   in sendRequestM (getHandle obj) "MultiRangeSelectTreeDataValues" args (onMultiValueResponse "MultiRangeSelectTreeDataValues")
+   in sendRequestM (getHandle obj) "MultiRangeSelectTreeDataValues" args (onSingleValueResponse "MultiRangeSelectTreeDataValues" "qSuccess")
 
 
 selectHyperCubeContinuousRange :: GenericObject -> String -> [NxContinuousRangeSelectInfo] -> SDKM Bool
@@ -572,12 +572,12 @@ selectHyperCubeContinuousRange_ obj path ranges softLock = selectHyperCubeContin
 selectHyperCubeContinuousRangeAsync :: GenericObject -> String -> [NxContinuousRangeSelectInfo] -> SDKM (Task Bool)
 selectHyperCubeContinuousRangeAsync obj path ranges =
   let args = [("qPath", toValue path), ("qRanges", toValue ranges)]
-   in sendRequestM (getHandle obj) "SelectHyperCubeContinuousRange" args (onMultiValueResponse "SelectHyperCubeContinuousRange")
+   in sendRequestM (getHandle obj) "SelectHyperCubeContinuousRange" args (onSingleValueResponse "SelectHyperCubeContinuousRange" "qSuccess")
 
 selectHyperCubeContinuousRangeAsync_ :: GenericObject -> String -> [NxContinuousRangeSelectInfo] -> Bool -> SDKM (Task Bool)
 selectHyperCubeContinuousRangeAsync_ obj path ranges softLock =
   let args = [("qPath", toValue path), ("qRanges", toValue ranges), ("qSoftLock", toValue softLock)]
-   in sendRequestM (getHandle obj) "SelectHyperCubeContinuousRange" args (onMultiValueResponse "SelectHyperCubeContinuousRange")
+   in sendRequestM (getHandle obj) "SelectHyperCubeContinuousRange" args (onSingleValueResponse "SelectHyperCubeContinuousRange" "qSuccess")
 
 
 getChild :: GenericObject -> String -> SDKM GenericObject
@@ -602,7 +602,7 @@ getChildInfos obj = getChildInfosAsync obj >>= awaitResult
 
 getChildInfosAsync :: GenericObject -> SDKM (Task [NxInfo])
 getChildInfosAsync obj =
-  sendRequestM (getHandle obj) "GetChildInfos" [] (onMultiValueResponse "GetChildInfos")
+  sendRequestM (getHandle obj) "GetChildInfos" [] (onSingleValueResponse "GetChildInfos" "qInfos")
 
 
 createChild :: GenericObject -> GenericObjectProperties -> SDKM CreateChildResult
@@ -643,12 +643,12 @@ destroyChild_ obj id propForThis = destroyChildAsync_ obj id propForThis >>= awa
 destroyChildAsync :: GenericObject -> String -> SDKM (Task Bool)
 destroyChildAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "DestroyChild" args (onMultiValueResponse "DestroyChild")
+   in sendRequestM (getHandle obj) "DestroyChild" args (onSingleValueResponse "DestroyChild" "qSuccess")
 
 destroyChildAsync_ :: GenericObject -> String -> GenericObjectProperties -> SDKM (Task Bool)
 destroyChildAsync_ obj id propForThis =
   let args = [("qId", toValue id), ("qPropForThis", toValue propForThis)]
-   in sendRequestM (getHandle obj) "DestroyChild" args (onMultiValueResponse "DestroyChild")
+   in sendRequestM (getHandle obj) "DestroyChild" args (onSingleValueResponse "DestroyChild" "qSuccess")
 
 
 destroyAllChildren :: GenericObject -> SDKM ()
@@ -681,7 +681,7 @@ getLinkedObjects obj = getLinkedObjectsAsync obj >>= awaitResult
 
 getLinkedObjectsAsync :: GenericObject -> SDKM (Task [NxLinkedObjectInfo])
 getLinkedObjectsAsync obj =
-  sendRequestM (getHandle obj) "GetLinkedObjects" [] (onMultiValueResponse "GetLinkedObjects")
+  sendRequestM (getHandle obj) "GetLinkedObjects" [] (onSingleValueResponse "GetLinkedObjects" "qItems")
 
 
 copyFrom :: GenericObject -> String -> SDKM ()

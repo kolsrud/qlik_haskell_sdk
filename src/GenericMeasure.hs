@@ -21,7 +21,7 @@ getLayout obj = getLayoutAsync obj >>= awaitResult
 
 getLayoutAsync :: GenericMeasure -> SDKM (Task GenericMeasureLayout)
 getLayoutAsync obj =
-  sendRequestM (getHandle obj) "GetLayout" [] (onMultiValueResponse "GetLayout")
+  sendRequestM (getHandle obj) "GetLayout" [] (onSingleValueResponse "GetLayout" "qLayout")
 
 
 applyPatches :: GenericMeasure -> [NxPatch] -> SDKM ()
@@ -47,7 +47,7 @@ getProperties obj = getPropertiesAsync obj >>= awaitResult
 
 getPropertiesAsync :: GenericMeasure -> SDKM (Task GenericMeasureProperties)
 getPropertiesAsync obj =
-  sendRequestM (getHandle obj) "GetProperties" [] (onMultiValueResponse "GetProperties")
+  sendRequestM (getHandle obj) "GetProperties" [] (onSingleValueResponse "GetProperties" "qProp")
 
 
 getInfo :: GenericMeasure -> SDKM NxInfo
@@ -55,7 +55,7 @@ getInfo obj = getInfoAsync obj >>= awaitResult
 
 getInfoAsync :: GenericMeasure -> SDKM (Task NxInfo)
 getInfoAsync obj =
-  sendRequestM (getHandle obj) "GetInfo" [] (onMultiValueResponse "GetInfo")
+  sendRequestM (getHandle obj) "GetInfo" [] (onSingleValueResponse "GetInfo" "qInfo")
 
 
 getMeasure :: GenericMeasure -> SDKM NxLibraryMeasureDef
@@ -63,7 +63,7 @@ getMeasure obj = getMeasureAsync obj >>= awaitResult
 
 getMeasureAsync :: GenericMeasure -> SDKM (Task NxLibraryMeasureDef)
 getMeasureAsync obj =
-  sendRequestM (getHandle obj) "GetMeasure" [] (onMultiValueResponse "GetMeasure")
+  sendRequestM (getHandle obj) "GetMeasure" [] (onSingleValueResponse "GetMeasure" "qMeasure")
 
 
 getLinkedObjects :: GenericMeasure -> SDKM [NxLinkedObjectInfo]
@@ -71,7 +71,7 @@ getLinkedObjects obj = getLinkedObjectsAsync obj >>= awaitResult
 
 getLinkedObjectsAsync :: GenericMeasure -> SDKM (Task [NxLinkedObjectInfo])
 getLinkedObjectsAsync obj =
-  sendRequestM (getHandle obj) "GetLinkedObjects" [] (onMultiValueResponse "GetLinkedObjects")
+  sendRequestM (getHandle obj) "GetLinkedObjects" [] (onSingleValueResponse "GetLinkedObjects" "qItems")
 
 
 publish :: GenericMeasure -> SDKM ()

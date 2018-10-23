@@ -21,7 +21,7 @@ getAppLayout obj = getAppLayoutAsync obj >>= awaitResult
 
 getAppLayoutAsync :: Doc -> SDKM (Task NxAppLayout)
 getAppLayoutAsync obj =
-  sendRequestM (getHandle obj) "GetAppLayout" [] (onMultiValueResponse "GetAppLayout")
+  sendRequestM (getHandle obj) "GetAppLayout" [] (onSingleValueResponse "GetAppLayout" "qLayout")
 
 
 setAppProperties :: Doc -> NxAppProperties -> SDKM ()
@@ -38,7 +38,7 @@ getAppProperties obj = getAppPropertiesAsync obj >>= awaitResult
 
 getAppPropertiesAsync :: Doc -> SDKM (Task NxAppProperties)
 getAppPropertiesAsync obj =
-  sendRequestM (getHandle obj) "GetAppProperties" [] (onMultiValueResponse "GetAppProperties")
+  sendRequestM (getHandle obj) "GetAppProperties" [] (onSingleValueResponse "GetAppProperties" "qProp")
 
 
 getLineage :: Doc -> SDKM [LineageInfo]
@@ -46,7 +46,7 @@ getLineage obj = getLineageAsync obj >>= awaitResult
 
 getLineageAsync :: Doc -> SDKM (Task [LineageInfo])
 getLineageAsync obj =
-  sendRequestM (getHandle obj) "GetLineage" [] (onMultiValueResponse "GetLineage")
+  sendRequestM (getHandle obj) "GetLineage" [] (onSingleValueResponse "GetLineage" "qLineage")
 
 
 createSessionObject :: Doc -> GenericObjectProperties -> SDKM GenericObject
@@ -64,7 +64,7 @@ destroySessionObject obj id = destroySessionObjectAsync obj id >>= awaitResult
 destroySessionObjectAsync :: Doc -> String -> SDKM (Task Bool)
 destroySessionObjectAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "DestroySessionObject" args (onMultiValueResponse "DestroySessionObject")
+   in sendRequestM (getHandle obj) "DestroySessionObject" args (onSingleValueResponse "DestroySessionObject" "qSuccess")
 
 
 createObject :: Doc -> GenericObjectProperties -> SDKM CreateObjectResult
@@ -94,7 +94,7 @@ destroyObject obj id = destroyObjectAsync obj id >>= awaitResult
 destroyObjectAsync :: Doc -> String -> SDKM (Task Bool)
 destroyObjectAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "DestroyObject" args (onMultiValueResponse "DestroyObject")
+   in sendRequestM (getHandle obj) "DestroyObject" args (onSingleValueResponse "DestroyObject" "qSuccess")
 
 
 getObject :: Doc -> String -> SDKM GenericObject
@@ -112,7 +112,7 @@ getObjects obj options = getObjectsAsync obj options >>= awaitResult
 getObjectsAsync :: Doc -> NxGetObjectOptions -> SDKM (Task [NxContainerEntry])
 getObjectsAsync obj options =
   let args = [("qOptions", toValue options)]
-   in sendRequestM (getHandle obj) "GetObjects" args (onMultiValueResponse "GetObjects")
+   in sendRequestM (getHandle obj) "GetObjects" args (onSingleValueResponse "GetObjects" "qList")
 
 
 getBookmarks :: Doc -> NxGetBookmarkOptions -> SDKM [NxContainerEntry]
@@ -121,7 +121,7 @@ getBookmarks obj options = getBookmarksAsync obj options >>= awaitResult
 getBookmarksAsync :: Doc -> NxGetBookmarkOptions -> SDKM (Task [NxContainerEntry])
 getBookmarksAsync obj options =
   let args = [("qOptions", toValue options)]
-   in sendRequestM (getHandle obj) "GetBookmarks" args (onMultiValueResponse "GetBookmarks")
+   in sendRequestM (getHandle obj) "GetBookmarks" args (onSingleValueResponse "GetBookmarks" "qList")
 
 
 cloneObject :: Doc -> String -> SDKM String
@@ -130,7 +130,7 @@ cloneObject obj id = cloneObjectAsync obj id >>= awaitResult
 cloneObjectAsync :: Doc -> String -> SDKM (Task String)
 cloneObjectAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "CloneObject" args (onMultiValueResponse "CloneObject")
+   in sendRequestM (getHandle obj) "CloneObject" args (onSingleValueResponse "CloneObject" "qCloneId")
 
 
 createDraft :: Doc -> String -> SDKM String
@@ -139,7 +139,7 @@ createDraft obj id = createDraftAsync obj id >>= awaitResult
 createDraftAsync :: Doc -> String -> SDKM (Task String)
 createDraftAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "CreateDraft" args (onMultiValueResponse "CreateDraft")
+   in sendRequestM (getHandle obj) "CreateDraft" args (onSingleValueResponse "CreateDraft" "qDraftId")
 
 
 commitDraft :: Doc -> String -> SDKM ()
@@ -157,7 +157,7 @@ destroyDraft obj id sourceId = destroyDraftAsync obj id sourceId >>= awaitResult
 destroyDraftAsync :: Doc -> String -> String -> SDKM (Task Bool)
 destroyDraftAsync obj id sourceId =
   let args = [("qId", toValue id), ("qSourceId", toValue sourceId)]
-   in sendRequestM (getHandle obj) "DestroyDraft" args (onMultiValueResponse "DestroyDraft")
+   in sendRequestM (getHandle obj) "DestroyDraft" args (onSingleValueResponse "DestroyDraft" "qSuccess")
 
 
 undo :: Doc -> SDKM Bool
@@ -165,7 +165,7 @@ undo obj = undoAsync obj >>= awaitResult
 
 undoAsync :: Doc -> SDKM (Task Bool)
 undoAsync obj =
-  sendRequestM (getHandle obj) "Undo" [] (onMultiValueResponse "Undo")
+  sendRequestM (getHandle obj) "Undo" [] (onSingleValueResponse "Undo" "qSuccess")
 
 
 redo :: Doc -> SDKM Bool
@@ -173,7 +173,7 @@ redo obj = redoAsync obj >>= awaitResult
 
 redoAsync :: Doc -> SDKM (Task Bool)
 redoAsync obj =
-  sendRequestM (getHandle obj) "Redo" [] (onMultiValueResponse "Redo")
+  sendRequestM (getHandle obj) "Redo" [] (onSingleValueResponse "Redo" "qSuccess")
 
 
 clearUndoBuffer :: Doc -> SDKM ()
@@ -211,7 +211,7 @@ destroyDimension obj id = destroyDimensionAsync obj id >>= awaitResult
 destroyDimensionAsync :: Doc -> String -> SDKM (Task Bool)
 destroyDimensionAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "DestroyDimension" args (onMultiValueResponse "DestroyDimension")
+   in sendRequestM (getHandle obj) "DestroyDimension" args (onSingleValueResponse "DestroyDimension" "qSuccess")
 
 
 getDimension :: Doc -> String -> SDKM GenericDimension
@@ -229,7 +229,7 @@ cloneDimension obj id = cloneDimensionAsync obj id >>= awaitResult
 cloneDimensionAsync :: Doc -> String -> SDKM (Task String)
 cloneDimensionAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "CloneDimension" args (onMultiValueResponse "CloneDimension")
+   in sendRequestM (getHandle obj) "CloneDimension" args (onSingleValueResponse "CloneDimension" "qCloneId")
 
 
 createMeasure :: Doc -> GenericMeasureProperties -> SDKM CreateMeasureResult
@@ -259,7 +259,7 @@ destroyMeasure obj id = destroyMeasureAsync obj id >>= awaitResult
 destroyMeasureAsync :: Doc -> String -> SDKM (Task Bool)
 destroyMeasureAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "DestroyMeasure" args (onMultiValueResponse "DestroyMeasure")
+   in sendRequestM (getHandle obj) "DestroyMeasure" args (onSingleValueResponse "DestroyMeasure" "qSuccess")
 
 
 getMeasure :: Doc -> String -> SDKM GenericMeasure
@@ -277,7 +277,7 @@ cloneMeasure obj id = cloneMeasureAsync obj id >>= awaitResult
 cloneMeasureAsync :: Doc -> String -> SDKM (Task String)
 cloneMeasureAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "CloneMeasure" args (onMultiValueResponse "CloneMeasure")
+   in sendRequestM (getHandle obj) "CloneMeasure" args (onSingleValueResponse "CloneMeasure" "qCloneId")
 
 
 createSessionVariable :: Doc -> GenericVariableProperties -> SDKM GenericVariable
@@ -295,7 +295,7 @@ destroySessionVariable obj id = destroySessionVariableAsync obj id >>= awaitResu
 destroySessionVariableAsync :: Doc -> String -> SDKM (Task Bool)
 destroySessionVariableAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "DestroySessionVariable" args (onMultiValueResponse "DestroySessionVariable")
+   in sendRequestM (getHandle obj) "DestroySessionVariable" args (onSingleValueResponse "DestroySessionVariable" "qSuccess")
 
 
 createVariableEx :: Doc -> GenericVariableProperties -> SDKM CreateVariableExResult
@@ -325,7 +325,7 @@ destroyVariableById obj id = destroyVariableByIdAsync obj id >>= awaitResult
 destroyVariableByIdAsync :: Doc -> String -> SDKM (Task Bool)
 destroyVariableByIdAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "DestroyVariableById" args (onMultiValueResponse "DestroyVariableById")
+   in sendRequestM (getHandle obj) "DestroyVariableById" args (onSingleValueResponse "DestroyVariableById" "qSuccess")
 
 
 destroyVariableByName :: Doc -> String -> SDKM Bool
@@ -334,7 +334,7 @@ destroyVariableByName obj name = destroyVariableByNameAsync obj name >>= awaitRe
 destroyVariableByNameAsync :: Doc -> String -> SDKM (Task Bool)
 destroyVariableByNameAsync obj name =
   let args = [("qName", toValue name)]
-   in sendRequestM (getHandle obj) "DestroyVariableByName" args (onMultiValueResponse "DestroyVariableByName")
+   in sendRequestM (getHandle obj) "DestroyVariableByName" args (onSingleValueResponse "DestroyVariableByName" "qSuccess")
 
 
 getVariableById :: Doc -> String -> SDKM GenericVariable
@@ -451,7 +451,7 @@ destroyBookmark obj id = destroyBookmarkAsync obj id >>= awaitResult
 destroyBookmarkAsync :: Doc -> String -> SDKM (Task Bool)
 destroyBookmarkAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "DestroyBookmark" args (onMultiValueResponse "DestroyBookmark")
+   in sendRequestM (getHandle obj) "DestroyBookmark" args (onSingleValueResponse "DestroyBookmark" "qSuccess")
 
 
 getBookmark_qs :: Doc -> String -> SDKM GenericBookmark
@@ -460,7 +460,7 @@ getBookmark_qs obj id = getBookmark_qsAsync obj id >>= awaitResult
 getBookmark_qsAsync :: Doc -> String -> SDKM (Task GenericBookmark)
 getBookmark_qsAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "GetBookmark_qs" args (onReturnValueResponse "GetBookmark_qs")
+   in sendRequestM (getHandle obj) "GetBookmark" args (onReturnValueResponse "GetBookmark_qs")
 
 
 applyBookmark_qs :: Doc -> String -> SDKM Bool
@@ -469,7 +469,7 @@ applyBookmark_qs obj id = applyBookmark_qsAsync obj id >>= awaitResult
 applyBookmark_qsAsync :: Doc -> String -> SDKM (Task Bool)
 applyBookmark_qsAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "ApplyBookmark_qs" args (onMultiValueResponse "ApplyBookmark_qs")
+   in sendRequestM (getHandle obj) "ApplyBookmark" args (onSingleValueResponse "ApplyBookmark_qs" "qSuccess")
 
 
 cloneBookmark :: Doc -> String -> SDKM String
@@ -478,7 +478,7 @@ cloneBookmark obj id = cloneBookmarkAsync obj id >>= awaitResult
 cloneBookmarkAsync :: Doc -> String -> SDKM (Task String)
 cloneBookmarkAsync obj id =
   let args = [("qId", toValue id)]
-   in sendRequestM (getHandle obj) "CloneBookmark" args (onMultiValueResponse "CloneBookmark")
+   in sendRequestM (getHandle obj) "CloneBookmark" args (onSingleValueResponse "CloneBookmark" "qCloneId")
 
 
 addFieldFromExpression :: Doc -> String -> String -> SDKM Bool
@@ -487,7 +487,7 @@ addFieldFromExpression obj name expr = addFieldFromExpressionAsync obj name expr
 addFieldFromExpressionAsync :: Doc -> String -> String -> SDKM (Task Bool)
 addFieldFromExpressionAsync obj name expr =
   let args = [("qName", toValue name), ("qExpr", toValue expr)]
-   in sendRequestM (getHandle obj) "AddFieldFromExpression" args (onMultiValueResponse "AddFieldFromExpression")
+   in sendRequestM (getHandle obj) "AddFieldFromExpression" args (onSingleValueResponse "AddFieldFromExpression" "qSuccess")
 
 
 getFieldOnTheFlyByName :: Doc -> String -> SDKM String
@@ -496,7 +496,7 @@ getFieldOnTheFlyByName obj readableName = getFieldOnTheFlyByNameAsync obj readab
 getFieldOnTheFlyByNameAsync :: Doc -> String -> SDKM (Task String)
 getFieldOnTheFlyByNameAsync obj readableName =
   let args = [("qReadableName", toValue readableName)]
-   in sendRequestM (getHandle obj) "GetFieldOnTheFlyByName" args (onMultiValueResponse "GetFieldOnTheFlyByName")
+   in sendRequestM (getHandle obj) "GetFieldOnTheFlyByName" args (onSingleValueResponse "GetFieldOnTheFlyByName" "qName")
 
 
 getAllInfos_qs :: Doc -> SDKM [NxInfo]
@@ -504,7 +504,7 @@ getAllInfos_qs obj = getAllInfos_qsAsync obj >>= awaitResult
 
 getAllInfos_qsAsync :: Doc -> SDKM (Task [NxInfo])
 getAllInfos_qsAsync obj =
-  sendRequestM (getHandle obj) "GetAllInfos_qs" [] (onMultiValueResponse "GetAllInfos_qs")
+  sendRequestM (getHandle obj) "GetAllInfos" [] (onSingleValueResponse "GetAllInfos_qs" "qInfos")
 
 
 resume :: Doc -> SDKM ()
@@ -550,12 +550,12 @@ getMatchingFields_ obj tags matchingFieldMode = getMatchingFieldsAsync_ obj tags
 getMatchingFieldsAsync :: Doc -> [String] -> SDKM (Task [NxMatchingFieldInfo])
 getMatchingFieldsAsync obj tags =
   let args = [("qTags", toValue tags)]
-   in sendRequestM (getHandle obj) "GetMatchingFields" args (onMultiValueResponse "GetMatchingFields")
+   in sendRequestM (getHandle obj) "GetMatchingFields" args (onSingleValueResponse "GetMatchingFields" "qFieldNames")
 
 getMatchingFieldsAsync_ :: Doc -> [String] -> NxMatchingFieldMode -> SDKM (Task [NxMatchingFieldInfo])
 getMatchingFieldsAsync_ obj tags matchingFieldMode =
   let args = [("qTags", toValue tags), ("qMatchingFieldMode", toValue matchingFieldMode)]
-   in sendRequestM (getHandle obj) "GetMatchingFields" args (onMultiValueResponse "GetMatchingFields")
+   in sendRequestM (getHandle obj) "GetMatchingFields" args (onSingleValueResponse "GetMatchingFields" "qFieldNames")
 
 
 findMatchingFields :: Doc -> String -> [String] -> SDKM [NxMatchingFieldInfo]
@@ -564,7 +564,7 @@ findMatchingFields obj fieldName tags = findMatchingFieldsAsync obj fieldName ta
 findMatchingFieldsAsync :: Doc -> String -> [String] -> SDKM (Task [NxMatchingFieldInfo])
 findMatchingFieldsAsync obj fieldName tags =
   let args = [("qFieldName", toValue fieldName), ("qTags", toValue tags)]
-   in sendRequestM (getHandle obj) "FindMatchingFields" args (onMultiValueResponse "FindMatchingFields")
+   in sendRequestM (getHandle obj) "FindMatchingFields" args (onSingleValueResponse "FindMatchingFields" "qFieldNames")
 
 
 scramble :: Doc -> String -> SDKM ()
@@ -590,7 +590,7 @@ getAssociationScores obj table1 table2 = getAssociationScoresAsync obj table1 ta
 getAssociationScoresAsync :: Doc -> String -> String -> SDKM (Task [AssociationScore])
 getAssociationScoresAsync obj table1 table2 =
   let args = [("qTable1", toValue table1), ("qTable2", toValue table2)]
-   in sendRequestM (getHandle obj) "GetAssociationScores" args (onMultiValueResponse "GetAssociationScores")
+   in sendRequestM (getHandle obj) "GetAssociationScores" args (onSingleValueResponse "GetAssociationScores" "qScore")
 
 
 getMediaList :: Doc -> SDKM GetMediaListResult
@@ -618,7 +618,7 @@ getContentLibraries obj = getContentLibrariesAsync obj >>= awaitResult
 
 getContentLibrariesAsync :: Doc -> SDKM (Task ContentLibraryList)
 getContentLibrariesAsync obj =
-  sendRequestM (getHandle obj) "GetContentLibraries" [] (onMultiValueResponse "GetContentLibraries")
+  sendRequestM (getHandle obj) "GetContentLibraries" [] (onSingleValueResponse "GetContentLibraries" "qList")
 
 
 getLibraryContent :: Doc -> String -> SDKM StaticContentList
@@ -627,7 +627,7 @@ getLibraryContent obj name = getLibraryContentAsync obj name >>= awaitResult
 getLibraryContentAsync :: Doc -> String -> SDKM (Task StaticContentList)
 getLibraryContentAsync obj name =
   let args = [("qName", toValue name)]
-   in sendRequestM (getHandle obj) "GetLibraryContent" args (onMultiValueResponse "GetLibraryContent")
+   in sendRequestM (getHandle obj) "GetLibraryContent" args (onSingleValueResponse "GetLibraryContent" "qList")
 
 
 doReloadEx :: Doc -> SDKM DoReloadExResult
@@ -638,12 +638,12 @@ doReloadEx_ obj params = doReloadExAsync_ obj params >>= awaitResult
 
 doReloadExAsync :: Doc -> SDKM (Task DoReloadExResult)
 doReloadExAsync obj =
-  sendRequestM (getHandle obj) "DoReloadEx" [] (onMultiValueResponse "DoReloadEx")
+  sendRequestM (getHandle obj) "DoReloadEx" [] (onSingleValueResponse "DoReloadEx" "qResult")
 
 doReloadExAsync_ :: Doc -> DoReloadExParams -> SDKM (Task DoReloadExResult)
 doReloadExAsync_ obj params =
   let args = [("qParams", toValue params)]
-   in sendRequestM (getHandle obj) "DoReloadEx" args (onMultiValueResponse "DoReloadEx")
+   in sendRequestM (getHandle obj) "DoReloadEx" args (onSingleValueResponse "DoReloadEx" "qResult")
 
 
 backCount_qs :: Doc -> SDKM Int
@@ -651,7 +651,7 @@ backCount_qs obj = backCount_qsAsync obj >>= awaitResult
 
 backCount_qsAsync :: Doc -> SDKM (Task Int)
 backCount_qsAsync obj =
-  sendRequestM (getHandle obj) "BackCount_qs" [] (onReturnValueResponse "BackCount_qs")
+  sendRequestM (getHandle obj) "BackCount" [] (onReturnValueResponse "BackCount_qs")
 
 
 forwardCount_qs :: Doc -> SDKM Int
@@ -659,7 +659,7 @@ forwardCount_qs obj = forwardCount_qsAsync obj >>= awaitResult
 
 forwardCount_qsAsync :: Doc -> SDKM (Task Int)
 forwardCount_qsAsync obj =
-  sendRequestM (getHandle obj) "ForwardCount_qs" [] (onReturnValueResponse "ForwardCount_qs")
+  sendRequestM (getHandle obj) "ForwardCount" [] (onReturnValueResponse "ForwardCount_qs")
 
 
 getSetAnalysis :: Doc -> SDKM String
@@ -670,12 +670,12 @@ getSetAnalysis_ obj stateName bookmarkId = getSetAnalysisAsync_ obj stateName bo
 
 getSetAnalysisAsync :: Doc -> SDKM (Task String)
 getSetAnalysisAsync obj =
-  sendRequestM (getHandle obj) "GetSetAnalysis" [] (onMultiValueResponse "GetSetAnalysis")
+  sendRequestM (getHandle obj) "GetSetAnalysis" [] (onSingleValueResponse "GetSetAnalysis" "qSetExpression")
 
 getSetAnalysisAsync_ :: Doc -> String -> String -> SDKM (Task String)
 getSetAnalysisAsync_ obj stateName bookmarkId =
   let args = [("qStateName", toValue stateName), ("qBookmarkId", toValue bookmarkId)]
-   in sendRequestM (getHandle obj) "GetSetAnalysis" args (onMultiValueResponse "GetSetAnalysis")
+   in sendRequestM (getHandle obj) "GetSetAnalysis" args (onSingleValueResponse "GetSetAnalysis" "qSetExpression")
 
 
 getScriptEx :: Doc -> SDKM AppScript
@@ -683,7 +683,7 @@ getScriptEx obj = getScriptExAsync obj >>= awaitResult
 
 getScriptExAsync :: Doc -> SDKM (Task AppScript)
 getScriptExAsync obj =
-  sendRequestM (getHandle obj) "GetScriptEx" [] (onMultiValueResponse "GetScriptEx")
+  sendRequestM (getHandle obj) "GetScriptEx" [] (onSingleValueResponse "GetScriptEx" "qScript")
 
 
 getVariables :: Doc -> VariableListDef -> SDKM [NxVariableListItem]
@@ -692,7 +692,7 @@ getVariables obj listDef = getVariablesAsync obj listDef >>= awaitResult
 getVariablesAsync :: Doc -> VariableListDef -> SDKM (Task [NxVariableListItem])
 getVariablesAsync obj listDef =
   let args = [("qListDef", toValue listDef)]
-   in sendRequestM (getHandle obj) "GetVariables" args (onMultiValueResponse "GetVariables")
+   in sendRequestM (getHandle obj) "GetVariables" args (onSingleValueResponse "GetVariables" "qList")
 
 
 expandExpression :: Doc -> String -> SDKM String
@@ -701,7 +701,7 @@ expandExpression obj expression = expandExpressionAsync obj expression >>= await
 expandExpressionAsync :: Doc -> String -> SDKM (Task String)
 expandExpressionAsync obj expression =
   let args = [("qExpression", toValue expression)]
-   in sendRequestM (getHandle obj) "ExpandExpression" args (onMultiValueResponse "ExpandExpression")
+   in sendRequestM (getHandle obj) "ExpandExpression" args (onSingleValueResponse "ExpandExpression" "qExpandedExpression")
 
 
 getField :: Doc -> String -> SDKM Field
@@ -744,7 +744,7 @@ getLooselyCoupledVector obj = getLooselyCoupledVectorAsync obj >>= awaitResult
 
 getLooselyCoupledVectorAsync :: Doc -> SDKM (Task [Int])
 getLooselyCoupledVectorAsync obj =
-  sendRequestM (getHandle obj) "GetLooselyCoupledVector" [] (onMultiValueResponse "GetLooselyCoupledVector")
+  sendRequestM (getHandle obj) "GetLooselyCoupledVector" [] (onSingleValueResponse "GetLooselyCoupledVector" "qv")
 
 
 setLooselyCoupledVector :: Doc -> [Int] -> SDKM Bool
@@ -771,7 +771,7 @@ evaluateEx obj expression = evaluateExAsync obj expression >>= awaitResult
 evaluateExAsync :: Doc -> String -> SDKM (Task FieldValue)
 evaluateExAsync obj expression =
   let args = [("qExpression", toValue expression)]
-   in sendRequestM (getHandle obj) "EvaluateEx" args (onMultiValueResponse "EvaluateEx")
+   in sendRequestM (getHandle obj) "EvaluateEx" args (onSingleValueResponse "EvaluateEx" "qValue")
 
 
 clearAll :: Doc -> SDKM ()
@@ -939,7 +939,7 @@ getScriptBreakpoints obj = getScriptBreakpointsAsync obj >>= awaitResult
 
 getScriptBreakpointsAsync :: Doc -> SDKM (Task [EditorBreakpoint])
 getScriptBreakpointsAsync obj =
-  sendRequestM (getHandle obj) "GetScriptBreakpoints" [] (onMultiValueResponse "GetScriptBreakpoints")
+  sendRequestM (getHandle obj) "GetScriptBreakpoints" [] (onSingleValueResponse "GetScriptBreakpoints" "qBreakpoints")
 
 
 setScriptBreakpoints :: Doc -> [EditorBreakpoint] -> SDKM ()
@@ -956,7 +956,7 @@ getScript obj = getScriptAsync obj >>= awaitResult
 
 getScriptAsync :: Doc -> SDKM (Task String)
 getScriptAsync obj =
-  sendRequestM (getHandle obj) "GetScript" [] (onMultiValueResponse "GetScript")
+  sendRequestM (getHandle obj) "GetScript" [] (onSingleValueResponse "GetScript" "qScript")
 
 
 getTextMacros :: Doc -> SDKM [TextMacro]
@@ -964,7 +964,7 @@ getTextMacros obj = getTextMacrosAsync obj >>= awaitResult
 
 getTextMacrosAsync :: Doc -> SDKM (Task [TextMacro])
 getTextMacrosAsync obj =
-  sendRequestM (getHandle obj) "GetTextMacros" [] (onMultiValueResponse "GetTextMacros")
+  sendRequestM (getHandle obj) "GetTextMacros" [] (onSingleValueResponse "GetTextMacros" "qMacros")
 
 
 setFetchLimit :: Doc -> Int -> SDKM ()
@@ -998,7 +998,7 @@ getTableData obj offset rows syntheticMode tableName = getTableDataAsync obj off
 getTableDataAsync :: Doc -> Int -> Int -> Bool -> String -> SDKM (Task [TableRow])
 getTableDataAsync obj offset rows syntheticMode tableName =
   let args = [("qOffset", toValue offset), ("qRows", toValue rows), ("qSyntheticMode", toValue syntheticMode), ("qTableName", toValue tableName)]
-   in sendRequestM (getHandle obj) "GetTableData" args (onMultiValueResponse "GetTableData")
+   in sendRequestM (getHandle obj) "GetTableData" args (onSingleValueResponse "GetTableData" "qData")
 
 
 getFieldAndColumnSamples :: Doc -> [FieldOrColumn] -> Int -> SDKM [SampleResult]
@@ -1010,11 +1010,11 @@ getFieldAndColumnSamples_ obj fieldsOrColumnsWithWildcards maxNumberOfValues ran
 getFieldAndColumnSamplesAsync :: Doc -> [FieldOrColumn] -> Int -> SDKM (Task [SampleResult])
 getFieldAndColumnSamplesAsync obj fieldsOrColumnsWithWildcards maxNumberOfValues =
   let args = [("qFieldsOrColumnsWithWildcards", toValue fieldsOrColumnsWithWildcards), ("qMaxNumberOfValues", toValue maxNumberOfValues)]
-   in sendRequestM (getHandle obj) "GetFieldAndColumnSamples" args (onMultiValueResponse "GetFieldAndColumnSamples")
+   in sendRequestM (getHandle obj) "GetFieldAndColumnSamples" args (onSingleValueResponse "GetFieldAndColumnSamples" "qResult")
 
 getFieldAndColumnSamplesAsync_ :: Doc -> [FieldOrColumn] -> Int -> Int -> SDKM (Task [SampleResult])
 getFieldAndColumnSamplesAsync_ obj fieldsOrColumnsWithWildcards maxNumberOfValues randSeed =
   let args = [("qFieldsOrColumnsWithWildcards", toValue fieldsOrColumnsWithWildcards), ("qMaxNumberOfValues", toValue maxNumberOfValues), ("qRandSeed", toValue randSeed)]
-   in sendRequestM (getHandle obj) "GetFieldAndColumnSamples" args (onMultiValueResponse "GetFieldAndColumnSamples")
+   in sendRequestM (getHandle obj) "GetFieldAndColumnSamples" args (onSingleValueResponse "GetFieldAndColumnSamples" "qResult")
 
 

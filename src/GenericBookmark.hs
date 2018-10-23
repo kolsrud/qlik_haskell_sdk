@@ -22,7 +22,7 @@ getFieldValues obj field getExcludedValues dataPage = getFieldValuesAsync obj fi
 getFieldValuesAsync :: GenericBookmark -> String -> Bool -> BookmarkFieldPage -> SDKM (Task [FieldValue])
 getFieldValuesAsync obj field getExcludedValues dataPage =
   let args = [("qField", toValue field), ("qGetExcludedValues", toValue getExcludedValues), ("qDataPage", toValue dataPage)]
-   in sendRequestM (getHandle obj) "GetFieldValues" args (onMultiValueResponse "GetFieldValues")
+   in sendRequestM (getHandle obj) "GetFieldValues" args (onSingleValueResponse "GetFieldValues" "qFieldValues")
 
 
 getLayout :: GenericBookmark -> SDKM GenericBookmarkLayout
@@ -30,7 +30,7 @@ getLayout obj = getLayoutAsync obj >>= awaitResult
 
 getLayoutAsync :: GenericBookmark -> SDKM (Task GenericBookmarkLayout)
 getLayoutAsync obj =
-  sendRequestM (getHandle obj) "GetLayout" [] (onMultiValueResponse "GetLayout")
+  sendRequestM (getHandle obj) "GetLayout" [] (onSingleValueResponse "GetLayout" "qLayout")
 
 
 applyPatches :: GenericBookmark -> [NxPatch] -> SDKM ()
@@ -56,7 +56,7 @@ getProperties obj = getPropertiesAsync obj >>= awaitResult
 
 getPropertiesAsync :: GenericBookmark -> SDKM (Task GenericBookmarkProperties)
 getPropertiesAsync obj =
-  sendRequestM (getHandle obj) "GetProperties" [] (onMultiValueResponse "GetProperties")
+  sendRequestM (getHandle obj) "GetProperties" [] (onSingleValueResponse "GetProperties" "qProp")
 
 
 getInfo :: GenericBookmark -> SDKM NxInfo
@@ -64,7 +64,7 @@ getInfo obj = getInfoAsync obj >>= awaitResult
 
 getInfoAsync :: GenericBookmark -> SDKM (Task NxInfo)
 getInfoAsync obj =
-  sendRequestM (getHandle obj) "GetInfo" [] (onMultiValueResponse "GetInfo")
+  sendRequestM (getHandle obj) "GetInfo" [] (onSingleValueResponse "GetInfo" "qInfo")
 
 
 apply :: GenericBookmark -> SDKM Bool
@@ -72,7 +72,7 @@ apply obj = applyAsync obj >>= awaitResult
 
 applyAsync :: GenericBookmark -> SDKM (Task Bool)
 applyAsync obj =
-  sendRequestM (getHandle obj) "Apply" [] (onMultiValueResponse "Apply")
+  sendRequestM (getHandle obj) "Apply" [] (onSingleValueResponse "Apply" "qSuccess")
 
 
 publish :: GenericBookmark -> SDKM ()

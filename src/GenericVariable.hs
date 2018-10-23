@@ -21,7 +21,7 @@ getLayout obj = getLayoutAsync obj >>= awaitResult
 
 getLayoutAsync :: GenericVariable -> SDKM (Task GenericVariableLayout)
 getLayoutAsync obj =
-  sendRequestM (getHandle obj) "GetLayout" [] (onMultiValueResponse "GetLayout")
+  sendRequestM (getHandle obj) "GetLayout" [] (onSingleValueResponse "GetLayout" "qLayout")
 
 
 applyPatches :: GenericVariable -> [NxPatch] -> SDKM ()
@@ -47,7 +47,7 @@ getProperties obj = getPropertiesAsync obj >>= awaitResult
 
 getPropertiesAsync :: GenericVariable -> SDKM (Task GenericVariableProperties)
 getPropertiesAsync obj =
-  sendRequestM (getHandle obj) "GetProperties" [] (onMultiValueResponse "GetProperties")
+  sendRequestM (getHandle obj) "GetProperties" [] (onSingleValueResponse "GetProperties" "qProp")
 
 
 getInfo :: GenericVariable -> SDKM NxInfo
@@ -55,7 +55,7 @@ getInfo obj = getInfoAsync obj >>= awaitResult
 
 getInfoAsync :: GenericVariable -> SDKM (Task NxInfo)
 getInfoAsync obj =
-  sendRequestM (getHandle obj) "GetInfo" [] (onMultiValueResponse "GetInfo")
+  sendRequestM (getHandle obj) "GetInfo" [] (onSingleValueResponse "GetInfo" "qInfo")
 
 
 setStringValue :: GenericVariable -> String -> SDKM ()

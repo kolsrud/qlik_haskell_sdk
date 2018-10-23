@@ -30,7 +30,7 @@ getProperties obj = getPropertiesAsync obj >>= awaitResult
 
 getPropertiesAsync :: GenericDerivedFields -> SDKM (Task GenericDerivedFieldsProperties)
 getPropertiesAsync obj =
-  sendRequestM (getHandle obj) "GetProperties" [] (onMultiValueResponse "GetProperties")
+  sendRequestM (getHandle obj) "GetProperties" [] (onSingleValueResponse "GetProperties" "qProp")
 
 
 getInfo :: GenericDerivedFields -> SDKM NxInfo
@@ -38,7 +38,7 @@ getInfo obj = getInfoAsync obj >>= awaitResult
 
 getInfoAsync :: GenericDerivedFields -> SDKM (Task NxInfo)
 getInfoAsync obj =
-  sendRequestM (getHandle obj) "GetInfo" [] (onMultiValueResponse "GetInfo")
+  sendRequestM (getHandle obj) "GetInfo" [] (onSingleValueResponse "GetInfo" "qInfo")
 
 
 getDerivedFieldData :: GenericDerivedFields -> SDKM NxDerivedFieldsData
@@ -46,7 +46,7 @@ getDerivedFieldData obj = getDerivedFieldDataAsync obj >>= awaitResult
 
 getDerivedFieldDataAsync :: GenericDerivedFields -> SDKM (Task NxDerivedFieldsData)
 getDerivedFieldDataAsync obj =
-  sendRequestM (getHandle obj) "GetDerivedFieldData" [] (onMultiValueResponse "GetDerivedFieldData")
+  sendRequestM (getHandle obj) "GetDerivedFieldData" [] (onSingleValueResponse "GetDerivedFieldData" "qData")
 
 
 getDerivedField :: GenericDerivedFields -> String -> SDKM GetDerivedFieldResult
@@ -75,7 +75,7 @@ getListData obj = getListDataAsync obj >>= awaitResult
 
 getListDataAsync :: GenericDerivedFields -> SDKM (Task [NxContainerEntry])
 getListDataAsync obj =
-  sendRequestM (getHandle obj) "GetListData" [] (onMultiValueResponse "GetListData")
+  sendRequestM (getHandle obj) "GetListData" [] (onSingleValueResponse "GetListData" "qListData")
 
 
 getDerivedFields :: GenericDerivedFields -> SDKM [NxDerivedField]
@@ -83,7 +83,7 @@ getDerivedFields obj = getDerivedFieldsAsync obj >>= awaitResult
 
 getDerivedFieldsAsync :: GenericDerivedFields -> SDKM (Task [NxDerivedField])
 getDerivedFieldsAsync obj =
-  sendRequestM (getHandle obj) "GetDerivedFields" [] (onMultiValueResponse "GetDerivedFields")
+  sendRequestM (getHandle obj) "GetDerivedFields" [] (onSingleValueResponse "GetDerivedFields" "qFields")
 
 
 getDerivedGroups :: GenericDerivedFields -> SDKM [NxDerivedGroup]
@@ -91,6 +91,6 @@ getDerivedGroups obj = getDerivedGroupsAsync obj >>= awaitResult
 
 getDerivedGroupsAsync :: GenericDerivedFields -> SDKM (Task [NxDerivedGroup])
 getDerivedGroupsAsync obj =
-  sendRequestM (getHandle obj) "GetDerivedGroups" [] (onMultiValueResponse "GetDerivedGroups")
+  sendRequestM (getHandle obj) "GetDerivedGroups" [] (onSingleValueResponse "GetDerivedGroups" "qGroups")
 
 

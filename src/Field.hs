@@ -21,7 +21,7 @@ getNxProperties obj = getNxPropertiesAsync obj >>= awaitResult
 
 getNxPropertiesAsync :: Field -> SDKM (Task NxFieldProperties)
 getNxPropertiesAsync obj =
-  sendRequestM (getHandle obj) "GetNxProperties" [] (onMultiValueResponse "GetNxProperties")
+  sendRequestM (getHandle obj) "GetNxProperties" [] (onSingleValueResponse "GetNxProperties" "qProperties")
 
 
 setNxProperties :: Field -> NxFieldProperties -> SDKM ()
@@ -67,12 +67,12 @@ lowLevelSelect_qs_ obj values toggleMode softLock = lowLevelSelect_qsAsync_ obj 
 lowLevelSelect_qsAsync :: Field -> [Int] -> Bool -> SDKM (Task Bool)
 lowLevelSelect_qsAsync obj values toggleMode =
   let args = [("qValues", toValue values), ("qToggleMode", toValue toggleMode)]
-   in sendRequestM (getHandle obj) "LowLevelSelect_qs" args (onReturnValueResponse "LowLevelSelect_qs")
+   in sendRequestM (getHandle obj) "LowLevelSelect" args (onReturnValueResponse "LowLevelSelect_qs")
 
 lowLevelSelect_qsAsync_ :: Field -> [Int] -> Bool -> Bool -> SDKM (Task Bool)
 lowLevelSelect_qsAsync_ obj values toggleMode softLock =
   let args = [("qValues", toValue values), ("qToggleMode", toValue toggleMode), ("qSoftLock", toValue softLock)]
-   in sendRequestM (getHandle obj) "LowLevelSelect_qs" args (onReturnValueResponse "LowLevelSelect_qs")
+   in sendRequestM (getHandle obj) "LowLevelSelect" args (onReturnValueResponse "LowLevelSelect_qs")
 
 
 clear_qs :: Field -> SDKM Bool
@@ -80,7 +80,7 @@ clear_qs obj = clear_qsAsync obj >>= awaitResult
 
 clear_qsAsync :: Field -> SDKM (Task Bool)
 clear_qsAsync obj =
-  sendRequestM (getHandle obj) "Clear_qs" [] (onReturnValueResponse "Clear_qs")
+  sendRequestM (getHandle obj) "Clear" [] (onReturnValueResponse "Clear_qs")
 
 
 getCardinal :: Field -> SDKM Int

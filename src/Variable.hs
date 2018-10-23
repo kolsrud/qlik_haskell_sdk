@@ -21,7 +21,7 @@ getNxProperties obj = getNxPropertiesAsync obj >>= awaitResult
 
 getNxPropertiesAsync :: Variable -> SDKM (Task NxVariableProperties)
 getNxPropertiesAsync obj =
-  sendRequestM (getHandle obj) "GetNxProperties" [] (onMultiValueResponse "GetNxProperties")
+  sendRequestM (getHandle obj) "GetNxProperties" [] (onSingleValueResponse "GetNxProperties" "qProperties")
 
 
 setNxProperties :: Variable -> NxVariableProperties -> SDKM ()
@@ -38,7 +38,7 @@ getContent obj = getContentAsync obj >>= awaitResult
 
 getContentAsync :: Variable -> SDKM (Task AlfaNumString)
 getContentAsync obj =
-  sendRequestM (getHandle obj) "GetContent" [] (onMultiValueResponse "GetContent")
+  sendRequestM (getHandle obj) "GetContent" [] (onSingleValueResponse "GetContent" "qContent")
 
 
 getRawContent :: Variable -> SDKM String

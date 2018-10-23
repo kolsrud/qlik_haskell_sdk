@@ -96,7 +96,7 @@ deleteApp obj appId = deleteAppAsync obj appId >>= awaitResult
 deleteAppAsync :: Global -> String -> SDKM (Task Bool)
 deleteAppAsync obj appId =
   let args = [("qAppId", toValue appId)]
-   in sendRequestM (getHandle obj) "DeleteApp" args (onMultiValueResponse "DeleteApp")
+   in sendRequestM (getHandle obj) "DeleteApp" args (onSingleValueResponse "DeleteApp" "qSuccess")
 
 
 isDesktopMode :: Global -> SDKM Bool
@@ -138,7 +138,7 @@ replaceAppFromID obj targetAppId srcAppID ids = replaceAppFromIDAsync obj target
 replaceAppFromIDAsync :: Global -> String -> String -> [String] -> SDKM (Task Bool)
 replaceAppFromIDAsync obj targetAppId srcAppID ids =
   let args = [("qTargetAppId", toValue targetAppId), ("qSrcAppID", toValue srcAppID), ("qIds", toValue ids)]
-   in sendRequestM (getHandle obj) "ReplaceAppFromID" args (onMultiValueResponse "ReplaceAppFromID")
+   in sendRequestM (getHandle obj) "ReplaceAppFromID" args (onSingleValueResponse "ReplaceAppFromID" "qSuccess")
 
 
 copyApp :: Global -> String -> String -> [String] -> SDKM Bool
@@ -147,7 +147,7 @@ copyApp obj targetAppId srcAppId ids = copyAppAsync obj targetAppId srcAppId ids
 copyAppAsync :: Global -> String -> String -> [String] -> SDKM (Task Bool)
 copyAppAsync obj targetAppId srcAppId ids =
   let args = [("qTargetAppId", toValue targetAppId), ("qSrcAppId", toValue srcAppId), ("qIds", toValue ids)]
-   in sendRequestM (getHandle obj) "CopyApp" args (onMultiValueResponse "CopyApp")
+   in sendRequestM (getHandle obj) "CopyApp" args (onSingleValueResponse "CopyApp" "qSuccess")
 
 
 exportApp :: Global -> String -> String -> [String] -> SDKM Bool
@@ -159,12 +159,12 @@ exportApp_ obj targetPath srcAppId ids noData = exportAppAsync_ obj targetPath s
 exportAppAsync :: Global -> String -> String -> [String] -> SDKM (Task Bool)
 exportAppAsync obj targetPath srcAppId ids =
   let args = [("qTargetPath", toValue targetPath), ("qSrcAppId", toValue srcAppId), ("qIds", toValue ids)]
-   in sendRequestM (getHandle obj) "ExportApp" args (onMultiValueResponse "ExportApp")
+   in sendRequestM (getHandle obj) "ExportApp" args (onSingleValueResponse "ExportApp" "qSuccess")
 
 exportAppAsync_ :: Global -> String -> String -> [String] -> Bool -> SDKM (Task Bool)
 exportAppAsync_ obj targetPath srcAppId ids noData =
   let args = [("qTargetPath", toValue targetPath), ("qSrcAppId", toValue srcAppId), ("qIds", toValue ids), ("qNoData", toValue noData)]
-   in sendRequestM (getHandle obj) "ExportApp" args (onMultiValueResponse "ExportApp")
+   in sendRequestM (getHandle obj) "ExportApp" args (onSingleValueResponse "ExportApp" "qSuccess")
 
 
 publishApp :: Global -> String -> String -> String -> SDKM ()
@@ -189,7 +189,7 @@ getUniqueID obj = getUniqueIDAsync obj >>= awaitResult
 
 getUniqueIDAsync :: Global -> SDKM (Task String)
 getUniqueIDAsync obj =
-  sendRequestM (getHandle obj) "GetUniqueID" [] (onMultiValueResponse "GetUniqueID")
+  sendRequestM (getHandle obj) "GetUniqueID" [] (onSingleValueResponse "GetUniqueID" "qUniqueID")
 
 
 openApp :: Global -> String -> SDKM Doc
@@ -264,7 +264,7 @@ getAppEntry obj appID = getAppEntryAsync obj appID >>= awaitResult
 getAppEntryAsync :: Global -> String -> SDKM (Task AppEntry)
 getAppEntryAsync obj appID =
   let args = [("qAppID", toValue appID)]
-   in sendRequestM (getHandle obj) "GetAppEntry" args (onMultiValueResponse "GetAppEntry")
+   in sendRequestM (getHandle obj) "GetAppEntry" args (onSingleValueResponse "GetAppEntry" "qEntry")
 
 
 engineVersion :: Global -> SDKM NxEngineVersion
@@ -272,7 +272,7 @@ engineVersion obj = engineVersionAsync obj >>= awaitResult
 
 engineVersionAsync :: Global -> SDKM (Task NxEngineVersion)
 engineVersionAsync obj =
-  sendRequestM (getHandle obj) "EngineVersion" [] (onMultiValueResponse "EngineVersion")
+  sendRequestM (getHandle obj) "EngineVersion" [] (onSingleValueResponse "EngineVersion" "qVersion")
 
 
 abortRequest :: Global -> Int -> SDKM ()
@@ -298,7 +298,7 @@ getProgress obj requestId = getProgressAsync obj requestId >>= awaitResult
 getProgressAsync :: Global -> Int -> SDKM (Task ProgressData)
 getProgressAsync obj requestId =
   let args = [("qRequestId", toValue requestId)]
-   in sendRequestM (getHandle obj) "GetProgress" args (onMultiValueResponse "GetProgress")
+   in sendRequestM (getHandle obj) "GetProgress" args (onSingleValueResponse "GetProgress" "qProgressData")
 
 
 qvVersion :: Global -> SDKM String
@@ -338,7 +338,7 @@ getDocList obj = getDocListAsync obj >>= awaitResult
 
 getDocListAsync :: Global -> SDKM (Task [DocListEntry])
 getDocListAsync obj =
-  sendRequestM (getHandle obj) "GetDocList" [] (onMultiValueResponse "GetDocList")
+  sendRequestM (getHandle obj) "GetDocList" [] (onSingleValueResponse "GetDocList" "qDocList")
 
 
 getInteract :: Global -> Int -> SDKM GetInteractResult
