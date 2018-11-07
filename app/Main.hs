@@ -17,12 +17,12 @@ import System.IO
        
 global :: Global
 global = Global (QixObject (-1) undefined)
-       
+
 main :: IO ()
 main = do 
   putStrLn "Start"
-  withConnection "127.0.0.1" 4848 myProg
-  
+  withConnection defaultDirectConnectionToPersonal myProg
+
 myProg :: SDKM ()
 myProg = do
   activateDebugConsole

@@ -27,7 +27,7 @@ import SDKMonad
 import Task
 import AbstractStructure
 import Debug.Trace
-
+       
 rpcRequest :: Handle -> RequestId -> String -> ParameterList -> String
 rpcRequest handle requestId method params =
   "{\"jsonrpc\":\"2.0\",\"id\":" ++ show requestId ++
@@ -134,17 +134,55 @@ makeResponseTask id onResponse = do
   addRequestListner id ((writeTask task) . onResponse)
   return task
 
-withConnection :: URL -> Port -> SDKM () -> IO ()
-withConnection url port m = do
-  putStrLn $ "Connecting to " ++ url ++ ":" ++ (show port)
-  catch (withSocketsDo $ WS.runClient url port
-                                          "/app/"
-                                          (runSDK m)
+data ConnectionType = DirectConnectionToPersonal
+                    | StaticHeaderViaProxy String String
+
+data ConnectionInfo = ConnectionInfo
+     { connectionType :: ConnectionType
+     , url            :: String
+     , port           :: Int
+     , virtualProxy   :: Maybe String
+     }
+
+defaultDirectConnectionToPersonal =
+  ConnectionInfo { connectionType = DirectConnectionToPersonal
+                 , url            = "127.0.0.1"
+                 , port           = 4848
+                 , virtualProxy  = Nothing
+                 }
+defaultStaticHeaderViaProxy (header, user) url =
+  ConnectionInfo { connectionType = StaticHeaderViaProxy header user
+                 , url            = url
+                 , port           = 80
+                 , virtualProxy   = Nothing
+                 }
+
+withConnection :: ConnectionInfo -> SDKM () -> IO ()
+withConnection connectionInfo m = do
+  let theurl    = url connectionInfo
+  let theport   = port connectionInfo
+  let thevproxy = maybe "" (\p -> "/" ++ p) (virtualProxy connectionInfo)
+  let headers   = makeHeaders (connectionType connectionInfo)
+  catch (withSocketsDo $ WS.runClientWith theurl theport
+                                              (thevproxy ++ "/app/")
+                                              WS.defaultConnectionOptions
+                                              headers
+                                              (runSDK m)
         )
     (\e -> case e::WS.ConnectionException of
              WS.ConnectionClosed -> return ()
              _ -> putStrLn $ "Caught error: " ++ show e)
+  
+makeHeaders :: ConnectionType -> [(CI C8.ByteString, C8.ByteString)]
+makeHeaders connectionType = case connectionType of
+  DirectConnectionToPersonal -> []
+  StaticHeaderViaProxy header user -> [makeHeader (header, user)]
  
+makeHeader :: (String,String) -> (CI C8.ByteString, C8.ByteString)
+makeHeader (key,value) = ( CI.mk (C8.pack key)
+                         , C8.pack value
+                         )
+            
 runSDK :: SDKM () -> WS.ClientApp ()
 runSDK m conn = do
   stateVar <- liftIO $ newMVar (initialState conn)
