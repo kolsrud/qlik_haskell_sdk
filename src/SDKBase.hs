@@ -1,4 +1,15 @@
-module SDKBase where
+module SDKBase
+  ( withConnection
+  , defaultDirectConnectionToPersonal
+  , defaultStaticHeaderViaProxy
+  , QixClass
+  , getHandle
+  , sendRequestM
+  , onVoidResponse
+  , onReturnValueResponse
+  , onSingleValueResponse
+  , onMultiValueResponse
+  ) where
 
 import           Control.Concurrent  (forkIO, killThread)
 import           Control.Monad       (forever, unless)
@@ -120,8 +131,8 @@ sendMessage msg = do
   printToDebugConsole ("Sending message:   " ++ msg)
   liftIO $ WS.sendTextData conn (T.pack msg)
 
-responseListner :: SDKM ()
-responseListner = do
+responseListener :: SDKM ()
+responseListener = do
   conn <- readState connection
   forever $ do
     txt <- liftIO $ WS.receiveData conn
@@ -131,7 +142,7 @@ responseListner = do
 makeResponseTask :: RequestId -> ResponseProcessor a -> SDKM (Task a)
 makeResponseTask id onResponse = do
   task <- newTask
-  addRequestListner id ((writeTask task) . onResponse)
+  addRequestListener id ((writeTask task) . onResponse)
   return task
 
 data ConnectionType = DirectConnectionToPersonal
@@ -186,6 +197,6 @@ makeHeader (key,value) = ( CI.mk (C8.pack key)
 runSDK :: SDKM () -> WS.ClientApp ()
 runSDK m conn = do
   stateVar <- liftIO $ newMVar (initialState conn)
-  forkIO $ evalStateT responseListner stateVar
+  forkIO $ evalStateT responseListener stateVar
   evalStateT m stateVar
   WS.sendClose conn (T.pack "Bye!")

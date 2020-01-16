@@ -57,8 +57,8 @@ newRequestIdM :: SDKM RequestId
 newRequestIdM = atomic $ \s -> let id = requestId s
                                 in (id, s {requestId = id +1})
 
-addRequestListner :: RequestId -> ResponseCallback -> SDKM ()
-addRequestListner id callback = atomicWrite $ \s ->
+addRequestListener :: RequestId -> ResponseCallback -> SDKM ()
+addRequestListener id callback = atomicWrite $ \s ->
   s { requestMap = Map.insert id callback (requestMap s) }
 
 setResult :: ResponseMessage -> SDKM ()
